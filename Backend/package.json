@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/mouloud240/Expense-Tracker-App#readme",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "express": "^4.21.0",
     "mongoose": "^8.7.0"
   }
