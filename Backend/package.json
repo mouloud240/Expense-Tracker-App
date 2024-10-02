@@ -1,0 +1,23 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "backend for an expense trackerApp",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mouloud240/Expense-Tracker-App.git"
+  },
+  "author": "Mouloud",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mouloud240/Expense-Tracker-App/issues"
+  },
+  "homepage": "https://github.com/mouloud240/Expense-Tracker-App#readme",
+  "dependencies": {
+    "express": "^4.21.0",
+    "mongoose": "^8.7.0"
+  }
+}
