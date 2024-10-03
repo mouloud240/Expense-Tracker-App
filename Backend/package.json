@@ -4,6 +4,7 @@
   "description": "backend for an expense trackerApp",
   "main": "app.js",
   "scripts": {
+    "start": "nodemon app.js",
     "test": "echo"
   },
   "repository": {
@@ -17,7 +18,11 @@
   },
   "homepage": "https://github.com/mouloud240/Expense-Tracker-App#readme",
   "dependencies": {
+    "@types/mongoose": "^5.11.97",
+    "bcrypt": "^5.1.1",
     "express": "^4.21.0",
-    "mongoose": "^8.7.0"
+    "mongoose": "^8.7.0",
+    "nodemon": "^3.1.7",
+    "uuid": "^10.0.0"
   }
 }
