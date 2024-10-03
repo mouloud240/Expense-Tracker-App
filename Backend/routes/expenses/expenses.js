@@ -30,7 +30,8 @@ expsenseRouter.post('/addExpense', async (req, res) => {
 expsenseRouter.get('/Expenses/:jwt',async (req,res)=>{
   const jwt=req.params.jwt.trim();
   if (!jwt){
-    res.send('Provide a token')
+  res.send('Provide a token')
+return;
   }
   
 
@@ -77,7 +78,7 @@ expsenseRouter.delete("/Expense/:jwt", async(req,res)=>{
   }
   const expenseAmount=user.Expenses.find(exp=>exp._id.toString()==id).Amount.Amount
   if (!expenseAmount){
-    res.send('Expense Error') //remove Later
+    res.send('Expense not found')
     return;
   }
   try {
