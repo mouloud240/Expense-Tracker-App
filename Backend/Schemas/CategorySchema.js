@@ -1,7 +1,7 @@
 const db=require('mongoose');
 const MoneyScheme = require('./MoneySchema');
 const Schema = db.Schema;
-const CategoryScheme=new Scheme({
+const CategoryScheme=new Schema({
   Name:{
     type:String,
     required:true

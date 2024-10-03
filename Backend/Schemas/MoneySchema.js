@@ -1,6 +1,6 @@
 const db=require('mongoose');
 const Schema = db.Schema;
-const MoneyScheme=new Scheme({
+const MoneyScheme=new Schema({
   Amount:{
     type:Number,
     required:true

@@ -33,7 +33,7 @@ const UserSchema=new Schema({
     required:true
   },
   monthlyExpense:{
-    type:MoneyScheme,
+    type:[ExpenseScheme],
     required:true
   },
   PayDay:{

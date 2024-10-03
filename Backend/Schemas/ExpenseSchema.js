@@ -7,11 +7,7 @@ const ExpenseScheme=new Schema({
     type:String,
     required:true
   },
-  Amount:{
-    type:Number,
-    required:true
-  },
-  Date:{
+   Date:{
     type:Date,
     required:true
   },
