@@ -32,7 +32,16 @@ categoriesRouter.post('/categories/:jwt',async (req,res)=>{
     res.send('Provide a body');
     return;
   }
+  const user=await userModel.findOne({Jwt:jwt});
+  if (!user){
+    return res.send('User not found')
+  }
+   const cat=user.CustomCategories.find(item=>item.Name==category.Name);
+  if (cat){
+    res.send('Category Already Exists')
+  }
   await userModel.updateOne({Jwt:jwt},{$push:{CustomCategories:category}})
+
   res.send('Added new Category')
 })
 
