@@ -8,21 +8,21 @@ AuthRouter.post('/login',async (req,res)=>{
   const {email,password}=req.body;
   const user = await userModel.findOne({Email:email});
   if (!email){
-    res.send('Provide an email');
+    res.status(400).send('Provide an email');
     return;
   }
 if (!password){
-    res.send('Provide a password');
+    res.status(400).send('Provide a password');
     return;
   }
   if(user){
     if(await bcrypt.compare(password,user.Password)){
-      res.send("Logged in");
+      res.json({user:user});
     }else{
-      res.send("Wrong password");
+      res.status(401).send("Wrong password");
     }
   }else{
-    res.send("User not found");
+    res.status(401).send("User not found");
   }
 })
 
