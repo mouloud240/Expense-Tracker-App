@@ -10,7 +10,8 @@ const categoriesRouter = require('./routes/categories/categoriesRoutes');
 const corsOptions={
   origin:'*',
   optionsSuccessStatus: 200 // Ensure compatibility by setting OPTIONS success status to 200 OK.
-}
+};
+
 app.use(cors(corsOptions))
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));

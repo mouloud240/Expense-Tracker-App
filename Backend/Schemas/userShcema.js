@@ -25,7 +25,7 @@ const UserSchema=new Schema({
     required:true
   },
   totalBalance:{
-    type:Number,
+    type:MoneyScheme,
     required:true
   },
   monthlyIncome:{
