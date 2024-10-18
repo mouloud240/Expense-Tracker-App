@@ -41,10 +41,6 @@ const UserSchema=new Schema({
     required:true
   },
   
-  Jwt:{
-    type:String,
-    required:true
-  } 
 
 });
 

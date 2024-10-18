@@ -28,7 +28,7 @@ class UserauthRepositoryImpl implements UserauthRepository{
 
   @override
   Future<Either<Failure, void>> logout() {
-    throw UnimplementedError();
+   return remotedatasource.logout();
   }
 
   @override

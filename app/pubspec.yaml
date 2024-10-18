@@ -47,6 +47,9 @@ dependencies:
   bcrypt: ^1.1.3
   date_utils:
   intl: ^0.17.0
+  flutter_secure_storage: ^9.2.2
+  shared_preferences: ^2.3.2
+  build_runner: ^2.4.13
 
 dev_dependencies:
   flutter_test:

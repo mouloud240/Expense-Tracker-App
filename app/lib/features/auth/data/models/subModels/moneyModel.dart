@@ -11,6 +11,9 @@ class Moneymodel extends Money with EquatableMixin {
       "Currency":currency
     };
   }
+  factory Moneymodel.fromMoney(Money money){
+    return Moneymodel(money.amount, money.currency);
+  }
 
   @override
   List<Object?> get props => [amount,currency];

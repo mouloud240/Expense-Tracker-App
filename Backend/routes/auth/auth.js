@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const AuthRouter= require('express').Router();
-
+const Jwt=require('jsonwebtoken');
 const {v4:uuidv4}=require('uuid');
 const userModel = require('../../Schemas/userShcema');
 const MoneyScheme = require('../../Schemas/MoneySchema');
@@ -20,15 +20,32 @@ if (!password){
   }
   if(user){
     if(await bcrypt.compare(password,user.Password)){
-      res.json({user:user});
+      const accessToken=Jwt.sign({UserId:user._id},dotnev.parsed.ACCESS_SECRET,{expiresIn:"1h"}) 
+      const refreshToken=Jwt.sign({UserId:user._id},dotnev.parsed.REFRESH_SECRET,{expiresIn:"7d"})
+      res.json({user:user,accesToken:accessToken,refreshToken:refreshToken});
     }else{
-      res.status(401).send("Wrong password");
+      res.status(401).send("Wrong Password");
     }
   }else{
     res.status(401).send("User not found");
   }
 })
-
+AuthRouter.post('/refresh',async (req,res)=>{
+  const {refreshToken}=req.body;
+  if (!refreshToken){
+    res.status(400).send('Provide a refresh token');
+    return;
+  }
+  Jwt.verify(refreshToken,dotnev.parsed.REFRESH_SECRET,(err,user)=>{
+    if (err){
+      res.status(403).send('Invalid refresh token');
+      return;
+    }
+    const accessToken=Jwt.sign({UserId:user.UserId},dotnev.parsed.ACCESS_SECRET,{expiresIn:"1h"}) 
+    res.json({accesToken:accessToken});
+  })
+}
+)
 AuthRouter.post('/register',async (req,res)=>{
   const id=uuidv4();
   const {Name,Email,Password,PayDay,totalBalance,monthlyIncome}=req.body;
@@ -152,4 +169,22 @@ try{
   
 
 })
+AuthRouter.delete('/logout',async (req,res)=>{
+  const {email}=req.body;
+  if (!email){
+    res.status(400).send('Provide an email');
+    return;
+  }
+  try{
+    await userModel.findOneAndUpdate({Email:email},{Jwt:null});
+
+} catch(err){
+  res.status(500).send('Error logging out');
+  return;
+}
+res.send('Logged out');
+}
+  
+)
+
 module.exports=AuthRouter;
