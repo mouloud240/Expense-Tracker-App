@@ -30,6 +30,16 @@ class  LocaledatasourceSECURE {
         }
     return right(null);
   }
+  Future<Either<Failure,void>>StoreAccesToken(String accessToken)async{
+    // ignore: constant_identifier_names
+    try {
+      await Storage.write(key: "acccesToken", value:accessToken);
+    } catch (e) {
+      print("this is the other one${e}");
+      return left(Failure("Error while storing AccessToken"));
+    }
+    return right(null);
+  }
   Future <Either<Failure,String>>getAccessToken()async{
     late String? acccesToken;
     try {
@@ -91,5 +101,8 @@ class Localdatasource {
      return left(Failure( "User not Found" ));
      }
     return right(user);
+  }
+  Future<bool> hasSeenWelcomePage()async{
+    return storage.getBool("seenWelcomePage")??false;
   }
  }

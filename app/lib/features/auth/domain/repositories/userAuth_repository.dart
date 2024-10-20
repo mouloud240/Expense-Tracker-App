@@ -6,10 +6,10 @@ import 'package:dartz/dartz.dart';
 
 abstract class UserauthRepository {
   Future<Either<Failure,User>> Login(String email,String password); 
-  
+ Future<bool>hasSeenWelcomePage();  
   Future <Either<Failure,User>>SignUp(User user);
   Future <Either<Failure,void>>resetpassword(String oldPassword,newPassword);
-  Either<Failure,void>setPin(String pin);
-  Future <Either<Failure,void>>forgotPassword();
+  Future<Either<Failure,void>>setPin(String pin);
+  Future <Either<Failure,void>>forgotPassword(String Email,String newPassword);
   Future <Either<Failure,void>>logout();
 }

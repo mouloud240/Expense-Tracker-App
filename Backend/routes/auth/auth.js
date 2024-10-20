@@ -6,8 +6,10 @@ const userModel = require('../../Schemas/userShcema');
 const MoneyScheme = require('../../Schemas/MoneySchema');
 const dotnev=require('dotenv').config();
 
-const nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer')
 AuthRouter.post('/login',async (req,res)=>{
+  console.log("Hitted login");
+  console.log(req.body);
   const {email,password}=req.body;
   const user = await userModel.findOne({Email:email});
   if (!email){

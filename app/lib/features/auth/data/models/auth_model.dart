@@ -4,7 +4,7 @@ import 'package:app/features/auth/data/models/userModel.dart';
 import 'package:equatable/equatable.dart';
 
 class AuthModel extends Equatable{
- Usermodel? user;
+ Usermodel user;
  String accesToken;
   String refreshToken;
   AuthModel({required this.user,required this.accesToken,required this.refreshToken});
@@ -13,7 +13,7 @@ class AuthModel extends Equatable{
   }
   Map<String,dynamic>  toJson(){
       return {
-      "user":user!.toJson(),
+      "user":user.toJson(),
       "accesToken":accesToken,
       "refreshToken":refreshToken
       };

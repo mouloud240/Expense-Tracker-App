@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 class Appcolors{
   static Color violet100=const Color(0xff7F3DFF);
   static Color violet80=const Color(0xff8F57FF);
+  static Color violet20=const Color(0xffEEE5FF);
   static Color violet60=const Color(0xffB18AFF);
   static Color dark100=const Color(0xff0D0E0F);
   static Color dark75=const Color(0xff161719);

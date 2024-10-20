@@ -1,3 +1,4 @@
+import 'package:app/core/Services/dio_service.dart';
 import 'package:app/core/errors/failure.dart';
 import 'package:app/features/auth/data/models/auth_model.dart';
 import 'package:app/features/auth/data/models/userModel.dart';
@@ -5,14 +6,13 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
 class Remotedatasource {
+  final dio=DioService.dio;
  Future<Either<Failure,AuthModel>>login(String email ,String password)async{
-
- final dio=Dio();
-
     try {
           
-   
-     Response response=await  dio.post('http://localhost:3001/login',data: {"email":email,"password":password});
+      
+     Response response=await  dio.post('/login',data: {"email":email,"password":password});
+      print("IM after response");
      if (response.statusCode==200){
   return Right(AuthModel.fromJson(response.data));
   }
@@ -29,9 +29,8 @@ class Remotedatasource {
   return left(Failure("Unkown Error"));
   }
   Future<Either<Failure,Usermodel>>signUp(Usermodel user)async{
-    final dio=Dio();
     try {
-     Response response=await  dio.post('http://localhost:3001/register',data: user.toJson());
+     Response response=await  dio.post('/register',data: user.toJson());
      if (response.statusCode==200){
   return Right(Usermodel.fromJson(response.data));
    }
@@ -51,11 +50,10 @@ class Remotedatasource {
   }
 
 Future<Either<Failure,String>>sendResetEmail(String email)async{
-  final dio=Dio();
   try {
           
    
-     Response response=await  dio.post('http://localhost:3001/SendEmail',data: {"email":email});
+     Response response=await  dio.post('/SendEmail',data: {"email":email});
      if (response.statusCode==200){
       return Right(response.data["Otp"]); 
   }}on DioException catch (e) {
@@ -71,11 +69,10 @@ Future<Either<Failure,String>>sendResetEmail(String email)async{
     }
     return left(Failure("Unkown Error"));}
 
-Future<Either<Failure,void>>forogtPassword(String email,String password)async{ 
+Future<Either<Failure,void>>forgotPassword(String email,String password)async{ 
   
-  final dio=Dio();
   try{
-    Response response=await dio.post('http://localhost:3001/resetPassword',data: {"email":email,"NewPassword":password});
+    Response response=await dio.post('/forgotPassword',data: {"email":email,"NewPassword":password});
     if (response.statusCode==200){
       return const Right(null);
     }
@@ -91,9 +88,8 @@ Future<Either<Failure,void>>forogtPassword(String email,String password)async{
   return left(Failure("Unkown Error"));
   }
 Future<Either<Failure,void>>logout()async{
-  final dio=Dio();
   try{
-    Response response=await dio.get('http://localhost:3001/logout');
+    Response response=await dio.get('/logout');
     if (response.statusCode==200){
       return const Right(null);
     }
@@ -105,5 +101,18 @@ Future<Either<Failure,void>>logout()async{
   }
   return left(Failure("Unkown Error"));
   }
+Future<Either<Failure,String>>refreshAccesToken(String refreshToken)async{
+    try {
+     Response response=await dio.post("/refreshToken");
+      if (response.statusCode==200){
+        return Right(response.data["accessToken"]);
+      }
+    }on DioException catch(e){
+      if (e.response?.statusCode==403){
+        return left(Failure("Invalid Refresh Token"));
+        }
+  }
+
+return left(Failure("Unkonw Error"));
 }
- 
+} 

@@ -5,7 +5,6 @@ import 'package:app/features/auth/data/source/local/localDataSource.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:dartz/dartz.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import 'localdatasourcemockes_test.mocks.dart';

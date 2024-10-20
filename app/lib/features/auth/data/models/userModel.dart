@@ -39,7 +39,19 @@ class Usermodel extends User with EquatableMixin {
       MonthlyIncome: Moneymodel.fromjson(json["monthlyIncome"]),
     );
   }
-
+  
+  factory Usermodel.fromEntity(User user) {
+    return Usermodel(
+      name: user.name,
+      hashedPassword: user.hashedPassword,
+      pin: user.pin,
+      email: user.email,
+      uid: user.uid,
+      payDay: user.payDay,
+      totalBalance: Moneymodel.fromMoney(user.totalBalance) ,
+      MonthlyIncome:Moneymodel.fromMoney(user.MonthlyIncome) ,
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {

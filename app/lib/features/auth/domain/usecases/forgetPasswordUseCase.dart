@@ -5,6 +5,6 @@ import 'package:dartz/dartz.dart';
 class  Forgetpasswordusecase  {
  UserauthRepository repository;
   Forgetpasswordusecase(this.repository);
-  Future <Either<Failure,void>>call() async{
-    return await repository.forgotPassword();  }
+  Future <Either<Failure,void>>call(String email,String newPassword) async{
+    return await repository.forgotPassword(email,newPassword);  }
 }
