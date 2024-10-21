@@ -1,9 +1,7 @@
 import 'package:app/config/colors.dart';
 import 'package:app/features/auth/presentation/screens/welcomepages/intropages.dart';
-import 'package:app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 class welcomePage extends StatelessWidget {
@@ -13,16 +11,16 @@ class welcomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(vertical: 30),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Expanded(
               child: Padding(
-                padding: EdgeInsets.only(top:200.h),
+                padding: EdgeInsets.only(top:120.h),
                 child: IntroductionScreen(
-                  pages: [Intropages.firstPage,Intropages.firstPage],
-                  
+                  pages: [Intropages.firstPage,Intropages.secondPage,Intropages.thirdPage],
+                 dotsDecorator: DotsDecorator(size:Size(8.sp, 8.sp),activeSize:Size(15.sp, 15.sp) ,activeColor: Appcolors.violet100,color: Appcolors.light20), 
                   showNextButton: false,
                   showDoneButton: false,
                 ),
@@ -32,7 +30,7 @@ class welcomePage extends StatelessWidget {
               width: 343.w,
               height: 56.h,
               child: ElevatedButton(onPressed: (){ },
-                style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Appcolors.violet100),shape:const WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20)))) ), child: Text('Sign Up',style: GoogleFonts.inter(color:Colors.white,fontSize: 18.sp),)),
+                style: ButtonStyle(elevation: WidgetStatePropertyAll(0),backgroundColor: WidgetStatePropertyAll(Colors.blueAccent[800]),shape:const WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20)))) ), child: Text('Sign Up',style: TextStyle(fontSize: 18.sp,color:Colors.white),)),
             ),
             SizedBox(
               height:16.h ,
@@ -40,8 +38,8 @@ class welcomePage extends StatelessWidget {
             SizedBox(
           width: 343.w,
           height: 56.h, 
-              child: ElevatedButton(onPressed: (){},style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Appcolors.violet20),shape:WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))))), child: Text('Login ',style: GoogleFonts.inter(color: Appcolors.violet100),), )),
-        
+              child: ElevatedButton(onPressed: (){},style: ButtonStyle(elevation: WidgetStatePropertyAll(0),backgroundColor: WidgetStatePropertyAll(Appcolors.violet20),shape:WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))))), child: Text('Login ',style: TextStyle(fontSize: 18.sp,color: Appcolors.violet80),), )),
+    
           ],
         ),
       ),
