@@ -12,7 +12,6 @@ class Remotedatasource {
           
       
      Response response=await  dio.post('/login',data: {"email":email,"password":password});
-      print("IM after response");
      if (response.statusCode==200){
   return Right(AuthModel.fromJson(response.data));
   }
@@ -24,9 +23,12 @@ class Remotedatasource {
     
      return left(Failure("Email or Password Wrong"));
     } 
+    }catch(e){
+     return left(Failure("Socket Error"));
     }
+
  
-  return left(Failure("Unkown Error"));
+  return left(Failure("Unkownn Error"));
   }
   Future<Either<Failure,Usermodel>>signUp(Usermodel user)async{
     try {

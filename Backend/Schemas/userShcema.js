@@ -40,7 +40,10 @@ const UserSchema=new Schema({
     type:Date,
     required:true
   },
-  
+  pin:{
+    type:String,
+    required:true
+  }
 
 });
 

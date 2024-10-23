@@ -1,14 +1,13 @@
 const bcrypt = require('bcrypt');
+const authMiddlware = require('../middlewares/authMiddlware');
+
 const AuthRouter= require('express').Router();
 const Jwt=require('jsonwebtoken');
 const {v4:uuidv4}=require('uuid');
 const userModel = require('../../Schemas/userShcema');
-const MoneyScheme = require('../../Schemas/MoneySchema');
 const dotnev=require('dotenv').config();
-
 const nodemailer = require('nodemailer')
 AuthRouter.post('/login',async (req,res)=>{
-  console.log("Hitted login");
   console.log(req.body);
   const {email,password}=req.body;
   const user = await userModel.findOne({Email:email});
@@ -50,7 +49,8 @@ AuthRouter.post('/refresh',async (req,res)=>{
 )
 AuthRouter.post('/register',async (req,res)=>{
   const id=uuidv4();
-  const {Name,Email,Password,PayDay,totalBalance,monthlyIncome}=req.body;
+  console.log(req.body);
+  const {Name,Email,Password,PayDay,totalBalance,monthlyIncome,pin}=req.body;
   if (!Name){
     res.status(422).send('Provide a name')
     return;
@@ -81,6 +81,10 @@ AuthRouter.post('/register',async (req,res)=>{
     res.status(409).send('User already exists')
     return;
   }
+  if (!pin){
+    
+    return res.status(422).send("Provide a pin")
+  }
   const hashedPassword = await bcrypt.hash(Password,5);
 
   const user =new userModel({
@@ -93,7 +97,7 @@ AuthRouter.post('/register',async (req,res)=>{
       monthlyIncome:monthlyIncome, // Initialize with money schema
       monthlyExpense:[], 
       PayDay: PayDay, // Set accordingly or initialize
-      Jwt:id   }) 
+      pin:pin,   }) 
 const regUser=await user.save()
   if (regUser){
      res.send(regUser);
@@ -102,6 +106,23 @@ const regUser=await user.save()
     res.statusCode(500).send('Error creating your account')
 
   }
+})
+AuthRouter.put('/pin',authMiddlware,async(req,res)=>{
+  const user=req.user
+  if (!user){
+    return res.status(405).send("Auth Error");
+  }
+  const pin=req.body.pin;
+if (!pin){
+    return res.status(400).send("Provide a pin");
+  }
+  try{
+
+await  userModel.findOneAndUpdate({id:user.UserId},{pin:pin})
+  }catch(e){
+   return res.status(404).send("User not Found")
+  }
+  return res.send("Updated User");
 })
 AuthRouter.post('/SendEmail/:email',async (req,res)=>{
   const {email}=req.params;

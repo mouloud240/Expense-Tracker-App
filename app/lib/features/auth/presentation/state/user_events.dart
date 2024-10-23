@@ -13,4 +13,10 @@ class LoginEvent extends UserEvent {
 // ignore: camel_case_types
 class logoutEvent extends UserEvent {
 }
+class RegisterEvent extends UserEvent {
+  final String email;
+  final String password;
+  final String name;
+  RegisterEvent(this.email, this.password, this.name);
+}
 

@@ -29,8 +29,10 @@ class welcomePage extends StatelessWidget {
             SizedBox(
               width: 343.w,
               height: 56.h,
-              child: ElevatedButton(onPressed: (){ },
-                style: ButtonStyle(elevation: WidgetStatePropertyAll(0),backgroundColor: WidgetStatePropertyAll(Colors.blueAccent[800]),shape:const WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20)))) ), child: Text('Sign Up',style: TextStyle(fontSize: 18.sp,color:Colors.white),)),
+              child: ElevatedButton(onPressed: (){ 
+Navigator.of(context).pushNamed("/signup");
+              },
+                style: ButtonStyle(elevation: WidgetStatePropertyAll(0),backgroundColor: WidgetStatePropertyAll(Appcolors.violet100),shape:const WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20)))) ), child: Text('Sign Up',style: TextStyle(fontSize: 18.sp,color:Colors.white),)),
             ),
             SizedBox(
               height:16.h ,
@@ -38,7 +40,9 @@ class welcomePage extends StatelessWidget {
             SizedBox(
           width: 343.w,
           height: 56.h, 
-              child: ElevatedButton(onPressed: (){},style: ButtonStyle(elevation: WidgetStatePropertyAll(0),backgroundColor: WidgetStatePropertyAll(Appcolors.violet20),shape:WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))))), child: Text('Login ',style: TextStyle(fontSize: 18.sp,color: Appcolors.violet80),), )),
+              child: ElevatedButton(onPressed: (){
+                Navigator.of(context).pushNamed("/login");
+              },style: ButtonStyle(elevation: WidgetStatePropertyAll(0),backgroundColor: WidgetStatePropertyAll(Appcolors.violet20),shape:WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))))), child: Text('Login ',style: TextStyle(fontSize: 18.sp,color: Appcolors.violet80),), )),
     
           ],
         ),

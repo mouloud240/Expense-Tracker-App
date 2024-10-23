@@ -1,12 +1,15 @@
 import 'package:app/features/auth/data/source/local/localDataSource.dart';
 import 'package:app/features/auth/data/source/remote/remoteDataSource.dart';
+import 'package:dartz/dartz_streaming.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class DioService {
+  static final decoder=JwtDecoder();
   static final Dio dio = Dio(
     BaseOptions(
-      baseUrl: 'http://localhost:3001',
+      baseUrl: 'http://10.0.2.2:3001',
       )
   )..interceptors.add(InterceptorsWrapper(
     onRequest: (options,handler)async{
@@ -21,12 +24,10 @@ class DioService {
      token =accesToken.fold((fail){
         return token;}, (token)=>token);
       if (token==""){
-      print("NO token for the Cookie Monster");
       return ;
     }
 
      options.headers['Authorization']='Bearer $token';  
-      print("Token is Kiddy");
      return handler.next(options); 
     },
   onError: (error,handler)async{
@@ -34,6 +35,17 @@ class DioService {
  final local=LocaledatasourceSECURE(const FlutterSecureStorage());
   if (error.response?.statusCode==403){
     final refreshToken=await local.getRefreshToken();
+    if (refreshToken.isRight()){
+    try {
+        
+      Map<String,dynamic> decoded=JwtDecoder.decode(refreshToken.getOrElse(()=>""));
+      if (true){
+
+      }
+        } catch (e) {
+           print("Logout");
+        }
+    }
     final accesToken=await remote.refreshAccesToken(refreshToken.getOrElse(() => ""));
     accesToken.fold((fail)=>null, (token)=>local.StoreAccesToken(token));
     final accesToken2=await local.getAccessToken();

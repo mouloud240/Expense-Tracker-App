@@ -3,11 +3,14 @@ import 'package:app/features/auth/data/source/local/localDataSource.dart';
 import 'package:app/features/auth/data/source/remote/remoteDataSource.dart';
 import 'package:app/features/auth/domain/usecases/loginUseCase.dart';
 import 'package:app/features/auth/domain/usecases/logoutUseCase.dart';
+import 'package:app/features/auth/domain/usecases/signInUseCase.dart';
 import 'package:app/features/auth/presentation/screens/authpages/login.dart';
+import 'package:app/features/auth/presentation/screens/authpages/pinSetterPage.dart';
 import 'package:app/features/auth/presentation/screens/authpages/signUp.dart';
 import 'package:app/features/auth/presentation/screens/welcomepages/welcome_screen.dart.dart';
 import 'package:app/features/auth/presentation/state/user_bloc.dart';
 import 'package:app/features/auth/presentation/state/user_state.dart';
+import 'package:app/features/expenses/presentation/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,6 +32,12 @@ void main()async{
         localedatasource: Localdatasource(sharedpref),
         localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),
       )),
+      Signinusecase( UserauthRepositoryImpl(
+        remotedatasource: Remotedatasource(),
+        localedatasource: Localdatasource(sharedpref),
+        localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),
+      )),
+  
     ),
     child: const MyApp(),
   ));
@@ -54,10 +63,13 @@ class _MyAppState extends State<MyApp> {
           routes: {
            "/welcome":(context)=>const welcomePage(),
            "/login":(context)=>const Login(),
-           "/signup":(context)=>const Signup()
+           "/signup":(context)=>const Signup(),
+           "/home":(context)=>const Homepage(),
+          "pinSet":(context)=>const Pinsetterpage(),
         },
         debugShowCheckedModeBanner: false,
           theme: ThemeData(
+            splashColor: Colors.transparent,
               fontFamily: "Inter",
             scaffoldBackgroundColor: Colors.white),
           home:BlocBuilder<UserBloc,UserState>(builder:(context,state){

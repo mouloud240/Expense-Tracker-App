@@ -1,6 +1,9 @@
 import 'package:app/features/auth/data/source/local/localDataSource.dart';
+import 'package:app/features/auth/domain/entities/subEntities/money.dart';
+import 'package:app/features/auth/domain/entities/user.dart';
 import 'package:app/features/auth/domain/usecases/loginUseCase.dart';
 import 'package:app/features/auth/domain/usecases/logoutUseCase.dart';
+import 'package:app/features/auth/domain/usecases/signInUseCase.dart';
 import 'package:app/features/auth/presentation/state/user_events.dart';
 import 'package:app/features/auth/presentation/state/user_state.dart';
 import 'package:bloc/bloc.dart';
@@ -9,12 +12,14 @@ class UserBloc extends Bloc<UserEvent,UserState> {
   final Logoutusecase logoutUseCase;
   final Localdatasource localdatasource;
   final Loginusecase loginUsecase;
-  UserBloc(this.localdatasource, this.logoutUseCase, this.loginUsecase) : super(UserStateInitial()){
+  final Signinusecase signinUsecase;
+  UserBloc(this.localdatasource, this.logoutUseCase, this.loginUsecase, this.signinUsecase) : super(UserStateInitial()){
 
-     _getUser();
     on<LoginEvent>((event, emit)async {
   final response=await loginUsecase(event.email, event.password);
-  response.fold((l) => emit(UserStateError(l.message)), (r) => emit(UserStateLoaded(r)));
+  response.fold((l) {
+        return  emit(UserStateError(l.message));}, (r) {
+          return  emit(UserStateLoaded(r));});
     });
    on<logoutEvent>((event,emit)async{
       final response=await logoutUseCase();
@@ -22,6 +27,10 @@ class UserBloc extends Bloc<UserEvent,UserState> {
     });
     on<UpdateUserEvent>((event,emit){
       emit(UserStateLoaded(event.user));
+    });
+    on<RegisterEvent>((event,emit)async{
+      final response=await signinUsecase(User(MonthlyIncome: Money(0,"DZD"), totalBalance: Money(0, "DZD"), name: event.name, hashedPassword:event.password , pin:"0000", email: event.email, uid:"", payDay: DateTime.now()));
+      response.fold((l) =>emit(UserStateError(l.message)), (r) => emit(UserStateLoaded(r)));
     });
       }
   void _getUser()async{
