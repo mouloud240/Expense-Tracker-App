@@ -8,30 +8,26 @@ import 'package:equatable/equatable.dart';
 
 class Usermodel extends User with EquatableMixin {
   Usermodel({
-    required String name,
-    required String hashedPassword,
-    required String pin,
-    required String email,
-    required String uid,
+    required super.name,
+    required super.hashedPassword,
+    required super.pin,
+    required super.email,
+    required super.uid,
     required DateTime payDay,
     required Moneymodel totalBalance,
     required Moneymodel MonthlyIncome,
   }) : super(
-          name: name,
-          hashedPassword: hashedPassword,
-          pin: pin,
-          email: email,
-          uid: uid,
           payDay: payDay.toUtc(), // Ensure it's in UTC
           totalBalance: Moneymodel.fromMoney(totalBalance),
           MonthlyIncome: Moneymodel.fromMoney(MonthlyIncome),
         );
 
   factory Usermodel.fromJson(Map<String, dynamic> json) {
+    print("Json is $json");
     return Usermodel(
       name: json['Name'],
       hashedPassword: json['Password'],
-      pin: "",
+      pin: json['pin'],
       email: json["Email"],
       uid: json['_id'],
       payDay: DateTime.parse(json['PayDay']).toUtc(), // Ensure it's in UTC

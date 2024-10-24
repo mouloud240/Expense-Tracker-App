@@ -94,10 +94,9 @@ class _SignupState extends State<Signup> {
         if (state is UserStateError){
         ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(state.message))
-        );
+        );}
          if (state is UserStateLoaded){
-        Navigator.of(context).pushNamed("/home");
-         } 
+        Navigator.of(context).pushNamed("/pinSet");
         }
       },
         child: SingleChildScrollView(

@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> {
            "/login":(context)=>const Login(),
            "/signup":(context)=>const Signup(),
            "/home":(context)=>const Homepage(),
-          "pinSet":(context)=>const Pinsetterpage(),
+          "/pinSet":(context)=>const Pinsetterpage(),
         },
         debugShowCheckedModeBanner: false,
           theme: ThemeData(

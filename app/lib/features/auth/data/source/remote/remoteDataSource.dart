@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:app/core/Services/dio_service.dart';
 import 'package:app/core/errors/failure.dart';
 import 'package:app/features/auth/data/models/auth_model.dart';
@@ -12,7 +14,7 @@ class Remotedatasource {
           
       
      Response response=await  dio.post('/login',data: {"email":email,"password":password});
-     if (response.statusCode==200){
+      if (response.statusCode==200){
   return Right(AuthModel.fromJson(response.data));
   }
         }on DioException catch (e) {
@@ -24,6 +26,7 @@ class Remotedatasource {
      return left(Failure("Email or Password Wrong"));
     } 
     }catch(e){
+      print(e);
      return left(Failure("Socket Error"));
     }
 
@@ -34,6 +37,7 @@ class Remotedatasource {
     try {
      Response response=await  dio.post('/register',data: user.toJson());
      if (response.statusCode==200){
+     print(response.data);
   return Right(Usermodel.fromJson(response.data));
    }
         }on DioException catch (e) {
@@ -117,4 +121,23 @@ Future<Either<Failure,String>>refreshAccesToken(String refreshToken)async{
 
 return left(Failure("Unkonw Error"));
 }
+  Future<Either<Failure,void>>setpin(String pin)async{
+    try {
+     dio.put("/pin",data: {"pin":pin});
+      return const Right(null);
+    }on DioException catch(e){
+      if (e.response?.statusCode==400){
+        return left(Failure("Provide Pin"));
+        }
+      if (e.response?.statusCode==500){
+        return left(Failure("Error Setting Pin"));
+        }
+      if (e.response?.statusCode==405){
+        return left(Failure("Unauthorized"));
+        }
+
+  
+    }
+  return left(Failure("Unkonw Error"));
+  }
 } 

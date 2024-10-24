@@ -16,21 +16,27 @@ class UserBloc extends Bloc<UserEvent,UserState> {
   UserBloc(this.localdatasource, this.logoutUseCase, this.loginUsecase, this.signinUsecase) : super(UserStateInitial()){
 
     on<LoginEvent>((event, emit)async {
+      emit(UserStateLoading());
   final response=await loginUsecase(event.email, event.password);
   response.fold((l) {
         return  emit(UserStateError(l.message));}, (r) {
           return  emit(UserStateLoaded(r));});
     });
    on<logoutEvent>((event,emit)async{
+      emit(UserStateLoading());
       final response=await logoutUseCase();
       response.fold((l) =>emit(UserStateError(l.message)), (r) => emit(UserStateInitial()));
     });
-    on<UpdateUserEvent>((event,emit){
+    on<UpdateUserEvent>((event,emit)
+    {
+        emit(UserStateLoading());
       emit(UserStateLoaded(event.user));
     });
     on<RegisterEvent>((event,emit)async{
+      emit(UserStateLoading());
       final response=await signinUsecase(User(MonthlyIncome: Money(0,"DZD"), totalBalance: Money(0, "DZD"), name: event.name, hashedPassword:event.password , pin:"0000", email: event.email, uid:"", payDay: DateTime.now()));
-      response.fold((l) =>emit(UserStateError(l.message)), (r) => emit(UserStateLoaded(r)));
+      response.fold((l) =>emit(UserStateError(l.message)), (r) { 
+          return add(LoginEvent(r.name, event.password));});
     });
       }
   void _getUser()async{

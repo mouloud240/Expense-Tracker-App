@@ -12,3 +12,5 @@ class UserStateError extends UserState {
   final String message;
   UserStateError(this.message);
 }
+class UserStateLoading extends UserState {
+}

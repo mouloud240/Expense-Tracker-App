@@ -19,10 +19,11 @@ const dbUri="mongodb://localhost:27017/expenses"
 db.connect(dbUri).then(()=>{
   console.log("Connected to db")
 })
+app.use(AuthRouter);
+app.use(expsenseRouter)
+app.use(categoriesRouter)
 app.listen(port,()=>{
   console.log("server is running on port "+port);
 })
 
-app.use(AuthRouter);
-app.use(expsenseRouter)
-app.use(categoriesRouter)
+

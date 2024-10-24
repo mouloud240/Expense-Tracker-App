@@ -66,6 +66,7 @@ class UserauthRepositoryImpl implements UserauthRepository{
   @override
   Future<Either<Failure, void>> setPin(String pin)async {
    try {
+
      await localedatasourceSECURE.setPin(pin);
     
     }catch (e) {

@@ -97,10 +97,11 @@ AuthRouter.post('/register',async (req,res)=>{
       monthlyIncome:monthlyIncome, // Initialize with money schema
       monthlyExpense:[], 
       PayDay: PayDay, // Set accordingly or initialize
-      pin:pin,   }) 
-const regUser=await user.save()
+      pin:pin,}) 
+const regUser=await user.save();
+  
   if (regUser){
-     res.send(regUser);
+     res.json(regUser);
 
   }else{
     res.statusCode(500).send('Error creating your account')
@@ -120,7 +121,7 @@ if (!pin){
 
 await  userModel.findOneAndUpdate({id:user.UserId},{pin:pin})
   }catch(e){
-   return res.status(404).send("User not Found")
+   return res.status(500).send("Error Updating Pin")
   }
   return res.send("Updated User");
 })

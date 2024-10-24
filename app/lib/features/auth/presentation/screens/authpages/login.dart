@@ -26,6 +26,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Login",
             style: TextStyle(
@@ -36,12 +37,14 @@ class _LoginState extends State<Login> {
         centerTitle: true,
         elevation: 0,
         toolbarHeight: 44.h,
+        
       ),
       body: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
           if (state is UserStateError) {
+          print("error ");
             ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.message)));
+                .showSnackBar(SnackBar(content: Text("Hehe")));
           }
           if (state is UserStateLoaded) {
             Navigator.of(context).pushNamed("/home");
@@ -80,7 +83,7 @@ class _LoginState extends State<Login> {
 
                 },
                 isPasswordVisible: !isPasswordVisible,
-                suffixIcon: !isPasswordVisible
+                suffixIcon: isPasswordVisible
                     ? Icons.visibility
                     : Icons.visibility_off,
                 SuffixAction: () {
@@ -145,7 +148,7 @@ class _LoginState extends State<Login> {
                 ),
                 TextButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamed("/signup");
+                      Navigator.of(context).pushNamed("/pinSet");
                     },
                     child: Text(
                       "Sign Up",
