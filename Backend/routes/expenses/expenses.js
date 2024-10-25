@@ -1,77 +1,69 @@
+const userModel = require('../../Schemas/userShcema');
+const authMiddlware = require('../middlewares/authMiddlware');
 const expsenseRouter = require('express').Router();
-const { Router } = require('express');
-const User=require('../../Schemas/userShcema')
-expsenseRouter.post('/addExpense', async (req, res) => {
-  const jwt=req.body.jwt;
-  if (!jwt){
-    res.send('provide jwt');
-    return
-  }
-  const user = await User.findOne({Jwt:jwt});
+expsenseRouter.post('/addExpense',authMiddlware ,async (req, res) => {
+   const User=req.user
+  
+  const user = await userModel.findById(User.UserId);
   if (!user){
     res.send('user not found!');
-
     return;
   }
   if (!req.body.Expense){
     res.send('provide a valid Expense')
     return;
   }
-     
-  const total=user.totalBalance;
- await User.updateOne({Jwt:jwt},{$set:{ totalBalance:total-req.body.Expense.Amount.Amount }})
- await User.updateOne({Jwt:jwt},{$push:{Expenses:req.body.Expense}});
-  const newUser=await User.findOne({Jwt:jwt})
+  try{
+ const total=user.totalBalance;
+    const newTotal={Amount: total.Amount-req.body.Expense.Amount.Amount,Currency:total.Currency};
+    console.log(total)
+ await userModel.updateOne({_id:User.UserId},{$set:{ totalBalance:newTotal }})
+ await userModel.updateOne({_id:User.UserId},{$push:{Expenses:req.body.Expense}});
+  const newUser=await userModel.findById(User.UserId);
   res.json({
     status:"Added an expenses",
     newBalance:newUser.totalBalance
   })
-})
-expsenseRouter.get('/Expenses/:jwt',async (req,res)=>{
-  const jwt=req.params.jwt.trim();
-  if (!jwt){
-  res.send('Provide a token')
-return;
-  }
-  
 
-const user = await User.findOne({ Jwt: jwt });
+  }catch(err){
+    console.log(err)
+    res.send('Invalid Expense')
+    return;
+  }
+ })
+expsenseRouter.get('/Expenses',authMiddlware,async (req,res)=>{
+  const User=req.user
+
+const user = await userModel.findById(User.UserId)
   if(!user){
     res.send('user not found!');
     return;
   }  
   res.json({"expenses":user.Expenses});
 })
-expsenseRouter.get('/ExpensesByCat/:jwt',async (req,res)=>{
+expsenseRouter.get('/ExpensesByCat',authMiddlware,async (req,res)=>{
   const category=req.query.category;
-  const jwt=req.params.jwt;
-  if (!jwt){
-    res.send('Provide a token')
-    return;
-  }
+ const User=req.user; 
   if (!category){
     res.send('No Category')
    return;
   }
-  const user=await User.findOne({Jwt:jwt});
+  const user=await userModel.findById(User.UserId);
   if (!user){
     res.send('Wrong Token');
     return;
   }
-  const expenses=user.Expenses.find(exp=>exp.Category==category);
+  const expenses=user.Expenses.find(exp=>exp.Category.Name==category);
   res.json({"expenses":expenses});
     
   })
-expsenseRouter.delete("/Expense/:jwt", async(req,res)=>{
+expsenseRouter.delete("/Expense",authMiddlware, async(req,res)=>{
   const id=req.query.id;
-  const jwt=req.params.jwt;
+  const User=req.user;
   if (!id){
     res.send('Provide an id')
   }
-  if (!jwt){
-    res.send('Provide a Valid Token')
-  }
-  let user=await User.findOne({Jwt:jwt})
+  let user=await userModel.findById(User.UserId);
   if (!user){
     res.send('User Not found');
     return;
@@ -84,30 +76,27 @@ expsenseRouter.delete("/Expense/:jwt", async(req,res)=>{
   try {
      
       user.Expenses = user.Expenses.filter(expense => expense._id.toString() !== id);
-    user.totalBalance+=expenseAmount
+    user.totalBalance={Amount:user.totalBalance.Amount+expenseAmount,Currency:user.totalBalance.Currency}
     await user.save()
     res.json({
-      status:"Delete expense",
+      status:"Deleted expense",
       newAmount:user.totalBalance
     })
        
   } catch (error) {
-
-    res.status(500).send('Failed to delete Expense')
+    console.log(error);
+      res.status(500).send('Failed to delete Expense')
   }
 
 
 })
-expsenseRouter.get('/Expense/:jwt',async(req,res)=>{
-  const jwt=req.params.jwt;
+expsenseRouter.get('/Expense',authMiddlware,async(req,res)=>{
   const id=req.query.id;
+  const User=req.user;
   if (!id){
     res.send('Provide an id')
   }
-  if (!jwt){
-    res.send('Provide a Valid Token')
-  }
-  const user=await User.findOne({Jwt:jwt})
+  const user=await userModel.findById(User.UserId);
   if (!user){
     res.send('User not found')
     return;
@@ -120,14 +109,9 @@ expsenseRouter.get('/Expense/:jwt',async(req,res)=>{
   res.json(expense)
   
 })
-expsenseRouter.delete('/ExpensesAll/:jwt',async (req,res)=>{
-  const jwt=req.params.jwt;
-  if (!jwt){
-    res.send('Provide a jwt')
-    return;
-  }
-  const user=await User.findOne({Jwt:jwt})
-
+expsenseRouter.delete('/ExpensesAll',authMiddlware,async (req,res)=>{
+  const User=req.user;
+  const user=await userModel.findById(User.UserId);
   if (!user){
     res.send('User not found');
     return;

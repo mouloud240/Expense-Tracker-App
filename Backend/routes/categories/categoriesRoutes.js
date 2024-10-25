@@ -1,14 +1,11 @@
 const userModel = require('../../Schemas/userShcema');
+const authMiddlware = require('../middlewares/authMiddlware');
 
 const categoriesRouter=require('express').Router()
 
-categoriesRouter.get("/categories/:jwt",async(req,res)=>{
-  const jwt=req.params.jwt
-  if (!jwt){
-    res.send('Provide a token')
-  return;
-  }
-  const user=await userModel.findOne({Jwt:jwt})
+categoriesRouter.get("/categories",authMiddlware,async(req,res)=>{
+  const User=req.user
+  const user=await userModel.findById(User.UserId)
   if (!user){
     res.send('User not found')
     return
@@ -19,39 +16,39 @@ categoriesRouter.get("/categories/:jwt",async(req,res)=>{
   })
 })
 
-categoriesRouter.post('/categories/:jwt',async (req,res)=>{
+categoriesRouter.post('/categories',authMiddlware,async (req,res)=>{
   const category=req.body;
-  const jwt=req.params.jwt;
-  console.log(category)
-  if (!jwt){
-    res.send('Provide a valid token')
-    
-    return
-  }
+  const User=req.user;
+  
   if (!category){
     res.send('Provide a body');
     return;
   }
-  await userModel.updateOne({Jwt:jwt},{$push:{CustomCategories:category}})
+  const user=await userModel.findById(User.UserId);
+  if (!user){
+    return res.send('User not found')
+  }
+   const cat=user.CustomCategories.find(item=>item.Name==category.Name);
+  if (cat){
+    res.send('Category Already Exists')
+  }
+  await userModel.updateOne({_id:User.UserId},{$push:{CustomCategories:category}})
+
   res.send('Added new Category')
 })
 
 
-categoriesRouter.put('/categoriesLimit/:jwt',async (req,res)=>{
+categoriesRouter.put('/categoriesLimit',authMiddlware,async (req,res)=>{
   const category=req.body;
-  const jwt=req.params.jwt;
+  const User=req.user;
   const categoryId=category._id
-  if (!jwt){
-    res.send('Provide a jwt')
-    return;
-  }
-  if (!category){
+    if (!category){
     res.send('Provide a category');
     return;
   }
 
   try {
-  await userModel.findOneAndUpdate({Jwt:jwt,"CustomCategories._id":categoryId},{
+  await userModel.findOneAndUpdate({_id:User.UserId,"CustomCategories._id":categoryId},{
 $set:{
       "CustomCategories.$.Name":category.Name,
       "CustomCategories.$.Budget":category.Budget,
@@ -70,12 +67,12 @@ $set:{
 
 
 
-categoriesRouter.put('/SetCategorieLimit/:jwt',async(req,res)=>{
-  const jwt=req.params.jwt;
+categoriesRouter.put('/SetCategorieLimit',authMiddlware,async(req,res)=>{
+  const User=req.user;
   const id=req.body.id
    
 try {
-  await userModel.findOneAndUpdate({Jwt:jwt,"CustomCategories._id":id},{
+  await userModel.findOneAndUpdate({_id:User.UserID,"CustomCategories._id":id},{
 $set:{
       "CustomCategories.$.Budget":category.Budget,
     },
@@ -89,17 +86,14 @@ $set:{
   res.send('Updated limit succefully')
 })
 
-categoriesRouter.delete('/categories/:jwt',async(req,res)=>{
-  const jwt=req.params.jwt;
+categoriesRouter.delete('/categories',authMiddlware,async(req,res)=>{
+  const User=req.user;
   const id=req.query.id;
   console.log(id)
-  if (!jwt){
-    return res.send('Provide a token');
-  }
   if (!id){
     return res.send('Provide a category id');
   }
-  let  user=await userModel.findOne({Jwt:jwt});
+  let  user=await userModel.findById(User.UserId);
   if (!user){
     res.send('User not found')
     return;
