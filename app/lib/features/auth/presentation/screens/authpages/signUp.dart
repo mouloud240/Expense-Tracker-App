@@ -97,6 +97,7 @@ class _SignupState extends State<Signup> {
         );}
          if (state is UserStateLoaded){
         Navigator.of(context).pushNamed("/pinSet");
+        BlocProvider.of<UserBloc>(context).add(LoadingEvent());
         }
       },
         child: SingleChildScrollView(

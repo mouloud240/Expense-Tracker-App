@@ -3,6 +3,7 @@ import 'package:app/features/auth/data/source/local/localDataSource.dart';
 import 'package:app/features/auth/data/source/remote/remoteDataSource.dart';
 import 'package:app/features/auth/domain/usecases/loginUseCase.dart';
 import 'package:app/features/auth/domain/usecases/logoutUseCase.dart';
+import 'package:app/features/auth/domain/usecases/setPinUseCase.dart';
 import 'package:app/features/auth/domain/usecases/signInUseCase.dart';
 import 'package:app/features/auth/presentation/screens/authpages/login.dart';
 import 'package:app/features/auth/presentation/screens/authpages/pinSetterPage.dart';
@@ -33,6 +34,12 @@ void main()async{
         localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),
       )),
       Signinusecase( UserauthRepositoryImpl(
+        remotedatasource: Remotedatasource(),
+        localedatasource: Localdatasource(sharedpref),
+        localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),
+
+      )),
+      Setpinusecase( UserauthRepositoryImpl(
         remotedatasource: Remotedatasource(),
         localedatasource: Localdatasource(sharedpref),
         localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),

@@ -19,4 +19,10 @@ class RegisterEvent extends UserEvent {
   final String name;
   RegisterEvent(this.email, this.password, this.name);
 }
+class ChangePinEvent extends UserEvent {
+  final String pin;
+  ChangePinEvent(this.pin);
+}
+class LoadingEvent extends UserEvent {
 
+}

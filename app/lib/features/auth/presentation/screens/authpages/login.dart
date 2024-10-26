@@ -148,7 +148,7 @@ class _LoginState extends State<Login> {
                 ),
                 TextButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamed("/pinSet");
+                      Navigator.of(context).pushNamed("/signUp");
                     },
                     child: Text(
                       "Sign Up",

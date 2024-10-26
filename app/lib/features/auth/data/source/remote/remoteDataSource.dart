@@ -121,10 +121,14 @@ Future<Either<Failure,String>>refreshAccesToken(String refreshToken)async{
 
 return left(Failure("Unkonw Error"));
 }
-  Future<Either<Failure,void>>setpin(String pin)async{
+  Future<Either<Failure,Usermodel>>setpin(String pin)async{
     try {
-     dio.put("/pin",data: {"pin":pin});
-      return const Right(null);
+      print("before put");
+     final resposnse =await dio.put("/pin",data: {"pin":pin});
+      print(resposnse);
+      if (resposnse.statusCode==200){
+        return Right(Usermodel.fromJson(resposnse.data));
+      }
     }on DioException catch(e){
       if (e.response?.statusCode==400){
         return left(Failure("Provide Pin"));
@@ -134,9 +138,7 @@ return left(Failure("Unkonw Error"));
         }
       if (e.response?.statusCode==405){
         return left(Failure("Unauthorized"));
-        }
-
-  
+        } 
     }
   return left(Failure("Unkonw Error"));
   }

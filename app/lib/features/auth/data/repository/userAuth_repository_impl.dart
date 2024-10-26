@@ -64,15 +64,15 @@ class UserauthRepositoryImpl implements UserauthRepository{
   }
 
   @override
-  Future<Either<Failure, void>> setPin(String pin)async {
+  Future<Either<Failure,Usermodel>> setPin(String pin)async {
    try {
 
      await localedatasourceSECURE.setPin(pin);
-    
+      return remotedatasource.setpin(pin);
+
     }catch (e) {
       return left(Failure("Error"));   
       }
-    return right(null);
   }
   @override 
   Future<bool>hasSeenWelcomePage()async{

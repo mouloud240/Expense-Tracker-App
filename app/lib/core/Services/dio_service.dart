@@ -8,7 +8,7 @@ class DioService {
   static final decoder=JwtDecoder();
   static final Dio dio = Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.1.6:3001',
+      baseUrl: 'http://10.0.2.2:3001',
       )
   )..interceptors.add(InterceptorsWrapper(
     onRequest: (options,handler)async{
@@ -19,14 +19,17 @@ class DioService {
     final  dataSource=LocaledatasourceSECURE(const FlutterSecureStorage());
 
       late String token;
+      print("Im here before");
      final accesToken=await dataSource.getAccessToken();
      token =accesToken.fold((fail){
         return token;}, (token)=>token);
+      print(accesToken);
       if (token==""){
       return ;
     }
 
-     options.headers['Authorization']='Bearer $token';  
+
+     options.headers['Authorization']=token;  
      return handler.next(options); 
     },
   onError: (error,handler)async{
@@ -39,7 +42,7 @@ class DioService {
         
       Map<String,dynamic> decoded=JwtDecoder.decode(refreshToken.getOrElse(()=>""));
       if (true){
-
+        return handler.next(error);
       }
         } catch (e) {
            print("Logout");

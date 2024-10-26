@@ -9,7 +9,7 @@ abstract class UserauthRepository {
  Future<bool>hasSeenWelcomePage();  
   Future <Either<Failure,User>>SignUp(User user);
   Future <Either<Failure,void>>resetpassword(String oldPassword,newPassword);
-  Future<Either<Failure,void>>setPin(String pin);
+  Future<Either<Failure,User>>setPin(String pin);
   Future <Either<Failure,void>>forgotPassword(String Email,String newPassword);
   Future <Either<Failure,void>>logout();
 }

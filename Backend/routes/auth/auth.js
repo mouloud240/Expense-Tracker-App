@@ -114,16 +114,22 @@ AuthRouter.put('/pin',authMiddlware,async(req,res)=>{
     return res.status(405).send("Auth Error");
   }
   const pin=req.body.pin;
+  let updatedUser;
 if (!pin){
     return res.status(400).send("Provide a pin");
   }
   try{
 
-await  userModel.findOneAndUpdate({id:user.UserId},{pin:pin})
+  updatedUser= await userModel.findOneAndUpdate({_id:user.UserId},{pin:pin},{new:true});
+
   }catch(e){
+    console.log(e);
    return res.status(500).send("Error Updating Pin")
   }
-  return res.send("Updated User");
+  if (updatedUser){
+    return res.json(updatedUser);
+  }
+  return res.status(500).send("Error Updating Pin")
 })
 AuthRouter.post('/SendEmail/:email',async (req,res)=>{
   const {email}=req.params;
