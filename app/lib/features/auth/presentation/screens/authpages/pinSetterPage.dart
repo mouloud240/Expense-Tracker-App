@@ -1,5 +1,6 @@
 import 'package:app/config/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Pinsetterpage extends StatefulWidget {
@@ -28,7 +29,7 @@ class _PinsetterpageState extends State<Pinsetterpage> with SingleTickerProvider
 
   Widget build(BuildContext context) {
       final Animation<double> offsetAnimation =
-    Tween(begin: 0.0, end: 80.0).chain(CurveTween(curve: Curves.elasticIn)).animate(controller)
+    Tween(begin: 0.0, end: 40.0).chain(CurveTween(curve: Curves.elasticIn)).animate(controller)
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           controller.reverse();
@@ -74,7 +75,7 @@ class _PinsetterpageState extends State<Pinsetterpage> with SingleTickerProvider
                               right:BorderSide(color: Appcolors.light20),
                               bottom: BorderSide(color: Appcolors.light20,width: 2.w)
                             ),
-                            color:index<CurrentPin.length? Colors.white:
+                            color:index<CurrentPin.length?controller.value==0? Colors.white:Colors.red:
                             Appcolors.violet100,
                           ),
                         ) ),
@@ -108,6 +109,8 @@ class _PinsetterpageState extends State<Pinsetterpage> with SingleTickerProvider
                       }
                     if (Buttons[index]=="->"){
                       if (CurrentPin.length!=4){
+                      //TODO replace with Stronger Vibrations 
+                      HapticFeedback.vibrate();
                       controller.forward(from: 0.0); 
                       return ;
                       }

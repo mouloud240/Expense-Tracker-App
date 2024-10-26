@@ -8,7 +8,7 @@ class DioService {
   static final decoder=JwtDecoder();
   static final Dio dio = Dio(
     BaseOptions(
-      baseUrl: 'http://10.0.2.2:3001',
+      baseUrl: 'http://192.168.1.6:3001',
       )
   )..interceptors.add(InterceptorsWrapper(
     onRequest: (options,handler)async{
