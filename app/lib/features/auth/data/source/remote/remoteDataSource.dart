@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:app/core/Services/dio_service.dart';
 import 'package:app/core/errors/failure.dart';
@@ -26,7 +25,6 @@ class Remotedatasource {
      return left(Failure("Email or Password Wrong"));
     } 
     }catch(e){
-      print(e);
      return left(Failure("Socket Error"));
     }
 
@@ -37,7 +35,6 @@ class Remotedatasource {
     try {
      Response response=await  dio.post('/register',data: user.toJson());
      if (response.statusCode==200){
-     print(response.data);
   return Right(Usermodel.fromJson(response.data));
    }
         }on DioException catch (e) {
@@ -78,20 +75,22 @@ Future<Either<Failure,String>>sendResetEmail(String email)async{
 Future<Either<Failure,void>>forgotPassword(String email,String password)async{ 
   
   try{
-    Response response=await dio.post('/forgotPassword',data: {"email":email,"NewPassword":password});
-    if (response.statusCode==200){
+    Response response=await dio.put('/forgotPassword',data: {"email":email,"newPassword":password});
+      if (response.statusCode==200){
       return const Right(null);
     }
   } on DioException catch(e){
    if (e.response?.statusCode==400){
-    return left(Failure("Provide Email and password"));
+    return left(Failure("Provide a password"));
    } 
    if (e.response?.statusCode==500){
    return left(Failure("Error Updating password"));
    }
-
+   if (e.response?.statusCode==404){
+   return left(Failure("Bad request"));
+   }
   }
-  return left(Failure("Unkown Error"));
+  return left(Failure("Internal Error"));
   }
 Future<Either<Failure,void>>logout()async{
   try{
@@ -123,9 +122,7 @@ return left(Failure("Unkonw Error"));
 }
   Future<Either<Failure,Usermodel>>setpin(String pin)async{
     try {
-      print("before put");
      final resposnse =await dio.put("/pin",data: {"pin":pin});
-      print(resposnse);
       if (resposnse.statusCode==200){
         return Right(Usermodel.fromJson(resposnse.data));
       }

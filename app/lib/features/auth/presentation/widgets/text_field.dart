@@ -6,7 +6,7 @@ class Field extends StatelessWidget {
   const Field({
     super.key,
     required this.controller,
-    required this.regexp,
+     this.regexp,
     this.isPasswordVisible=false, required this.hintText, required this.validator,
    this.suffixIcon, this.SuffixAction
   });
@@ -15,7 +15,7 @@ class Field extends StatelessWidget {
  final String  hintText;
  final String? Function(String?) validator; 
   final TextEditingController controller;
-  final RegExp regexp;
+  final RegExp? regexp;
 
    final bool isPasswordVisible ;
   @override

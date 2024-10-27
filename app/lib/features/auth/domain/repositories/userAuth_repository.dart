@@ -12,4 +12,5 @@ abstract class UserauthRepository {
   Future<Either<Failure,User>>setPin(String pin);
   Future <Either<Failure,void>>forgotPassword(String Email,String newPassword);
   Future <Either<Failure,void>>logout();
+  Future <Either<Failure,String>>sendPassResetEmail(String email);
 }

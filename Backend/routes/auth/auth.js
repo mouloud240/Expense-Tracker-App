@@ -8,7 +8,6 @@ const userModel = require('../../Schemas/userShcema');
 const dotnev=require('dotenv').config();
 const nodemailer = require('nodemailer')
 AuthRouter.post('/login',async (req,res)=>{
-  console.log(req.body);
   const {email,password}=req.body;
   const user = await userModel.findOne({Email:email});
   if (!email){
@@ -131,8 +130,8 @@ if (!pin){
   }
   return res.status(500).send("Error Updating Pin")
 })
-AuthRouter.post('/SendEmail/:email',async (req,res)=>{
-  const {email}=req.params;
+AuthRouter.post('/SendEmail',async (req,res)=>{
+  const {email}=req.body;
   const Otp=uuidv4().substring(0,6);
   let mailOptions = {
     from: 'trackiexpense@gmail.com',   // Sender address
@@ -177,6 +176,8 @@ AuthRouter.post('/SendEmail/:email',async (req,res)=>{
 )
 AuthRouter.put('/forgotPassword',async (req,res)=>{
   const {newPassword,email}=req.body;
+  console.log(req.body);
+  
   if (!newPassword){
     res.status(400).send('Provide a new password');
     return;
@@ -190,11 +191,12 @@ try{
 
   await userModel.findOneAndUpdate({Email:email},{Password:hashedPassword});
   }catch(err)
-{
+{  
      console.log(err)
     res.status(500).send('Error updating password');
  return 
   }
+
   res.send(hashedPassword);
   
 

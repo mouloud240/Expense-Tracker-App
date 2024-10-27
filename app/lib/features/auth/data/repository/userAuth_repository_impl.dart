@@ -50,6 +50,13 @@ class UserauthRepositoryImpl implements UserauthRepository{
   return await remotedatasource.forgotPassword(Email, newPassword);
   }
   @override
+  Future<Either<Failure, String>> sendEmai(String email) async{
+    if (await NetworkInfo.isConnected==false){
+      return left(Failure("No internet connection"));
+    }
+    return await remotedatasource.sendResetEmail(email);
+  }
+  @override
   Future<Either<Failure, void>> logout() {
     localedatasourceSECURE.ClearTokens();
    return remotedatasource.logout();
@@ -77,6 +84,11 @@ class UserauthRepositoryImpl implements UserauthRepository{
   @override 
   Future<bool>hasSeenWelcomePage()async{
   return  await localedatasource.hasSeenWelcomePage();
+  }
+
+  @override
+  Future<Either<Failure, String>> sendPassResetEmail(String email)async {
+    return await remotedatasource.sendResetEmail(email);
   }
 }
   

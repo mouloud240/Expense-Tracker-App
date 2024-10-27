@@ -1,3 +1,4 @@
+import 'package:app/core/Services/sharedPrefsService.dart';
 import 'package:app/features/auth/data/repository/userAuth_repository_impl.dart';
 import 'package:app/features/auth/data/source/local/localDataSource.dart';
 import 'package:app/features/auth/data/source/remote/remoteDataSource.dart';
@@ -5,6 +6,7 @@ import 'package:app/features/auth/domain/usecases/loginUseCase.dart';
 import 'package:app/features/auth/domain/usecases/logoutUseCase.dart';
 import 'package:app/features/auth/domain/usecases/setPinUseCase.dart';
 import 'package:app/features/auth/domain/usecases/signInUseCase.dart';
+import 'package:app/features/auth/presentation/screens/authpages/forgot_password.dart';
 import 'package:app/features/auth/presentation/screens/authpages/login.dart';
 import 'package:app/features/auth/presentation/screens/authpages/pinSetterPage.dart';
 import 'package:app/features/auth/presentation/screens/authpages/signUp.dart';
@@ -19,7 +21,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
-  final sharedpref=await SharedPreferences.getInstance();
+  await Sharedprefsservice().init(); 
+  final sharedpref=Sharedprefsservice().prefs;
   runApp(BlocProvider(
     create: (context)=>UserBloc(
       Localdatasource(sharedpref),
@@ -73,6 +76,7 @@ class _MyAppState extends State<MyApp> {
            "/signup":(context)=>const Signup(),
            "/home":(context)=>const Homepage(),
           "/pinSet":(context)=>const Pinsetterpage(),
+          "/forgotPassword":(context)=>const ForgotPassword(),
         },
         debugShowCheckedModeBanner: false,
           theme: ThemeData(

@@ -19,11 +19,9 @@ class DioService {
     final  dataSource=LocaledatasourceSECURE(const FlutterSecureStorage());
 
       late String token;
-      print("Im here before");
      final accesToken=await dataSource.getAccessToken();
      token =accesToken.fold((fail){
         return token;}, (token)=>token);
-      print(accesToken);
       if (token==""){
       return ;
     }
@@ -41,10 +39,12 @@ class DioService {
     try {
         
       Map<String,dynamic> decoded=JwtDecoder.decode(refreshToken.getOrElse(()=>""));
-      if (true){
+      bool refreshNotExpired=true;
+      if (refreshNotExpired){
         return handler.next(error);
       }
         } catch (e) {
+        //TODO MAKE A LOGOUT FUNCTION
            print("Logout");
         }
     }
