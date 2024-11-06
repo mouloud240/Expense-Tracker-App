@@ -5,7 +5,6 @@ class Failure extends Equatable {
   Failure(this.message);
 
   @override
-  // TODO: implement props
   List<Object?> get props => [message]; 
 
 }

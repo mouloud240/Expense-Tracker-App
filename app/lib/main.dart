@@ -6,6 +6,7 @@ import 'package:app/features/auth/domain/usecases/loginUseCase.dart';
 import 'package:app/features/auth/domain/usecases/logoutUseCase.dart';
 import 'package:app/features/auth/domain/usecases/setPinUseCase.dart';
 import 'package:app/features/auth/domain/usecases/signInUseCase.dart';
+import 'package:app/features/auth/presentation/screens/authpages/budgetSelection.dart';
 import 'package:app/features/auth/presentation/screens/authpages/forgot_password.dart';
 import 'package:app/features/auth/presentation/screens/authpages/login.dart';
 import 'package:app/features/auth/presentation/screens/authpages/pinSetterPage.dart';
@@ -18,37 +19,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
   await Sharedprefsservice().init(); 
   final sharedpref=Sharedprefsservice().prefs;
-  runApp(BlocProvider(
-    create: (context)=>UserBloc(
-      Localdatasource(sharedpref),
-     Logoutusecase( UserauthRepositoryImpl(
-        remotedatasource: Remotedatasource(),
-        localedatasource: Localdatasource(sharedpref),
-        localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),
-      )),
-      Loginusecase( UserauthRepositoryImpl(
-        remotedatasource: Remotedatasource(),
-        localedatasource: Localdatasource(sharedpref),
-        localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),
-      )),
-      Signinusecase( UserauthRepositoryImpl(
-        remotedatasource: Remotedatasource(),
-        localedatasource: Localdatasource(sharedpref),
-        localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),
-
-      )),
-      Setpinusecase( UserauthRepositoryImpl(
-        remotedatasource: Remotedatasource(),
-        localedatasource: Localdatasource(sharedpref),
-        localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),
-      )),
-  
-    ),
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context)=>UserBloc(
+          Localdatasource(sharedpref),
+         Logoutusecase( UserauthRepositoryImpl(
+            remotedatasource: Remotedatasource(),
+            localedatasource: Localdatasource(sharedpref),
+            localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),
+          )),
+          Loginusecase( UserauthRepositoryImpl(
+            remotedatasource: Remotedatasource(),
+            localedatasource: Localdatasource(sharedpref),
+            localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),
+          )),
+          Signinusecase( UserauthRepositoryImpl(
+            remotedatasource: Remotedatasource(),
+            localedatasource: Localdatasource(sharedpref),
+            localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),
+      
+          )),
+          Setpinusecase( UserauthRepositoryImpl(
+            remotedatasource: Remotedatasource(),
+            localedatasource: Localdatasource(sharedpref),
+            localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),
+          )),
+      
+        ),
+        child: const MyApp(),
+      ),
+      
+    ],
     child: const MyApp(),
   ));
 }
@@ -77,6 +83,7 @@ class _MyAppState extends State<MyApp> {
            "/home":(context)=>const Homepage(),
           "/pinSet":(context)=>const Pinsetterpage(),
           "/forgotPassword":(context)=>const ForgotPassword(),
+          "/setBudget":(context)=>const Budgetselection(),
         },
         debugShowCheckedModeBanner: false,
           theme: ThemeData(

@@ -29,7 +29,7 @@ class Appcolors{
   static Color blue60=const Color(0xff57A5FF);
   static Color blue40=const Color(0xff8AC0FF);
   static Color light100=const Color(0xffFFFFFF);
-  static Color light80 =const Color(0xffFBFBFB);
+  static Color light80 =const Color(0xff808080);
   static Color light60=Color(0xffF7F9FA);
   static Color light40=const Color(0xffF2F4F5);
   static Color light20=const Color(0xff91919F);

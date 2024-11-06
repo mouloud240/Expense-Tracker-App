@@ -7,7 +7,7 @@ import 'package:app/features/auth/domain/usecases/setPinUseCase.dart';
 import 'package:app/features/auth/domain/usecases/signInUseCase.dart';
 import 'package:app/features/auth/presentation/state/user_events.dart';
 import 'package:app/features/auth/presentation/state/user_state.dart';
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UserBloc extends Bloc<UserEvent,UserState> {
   final Logoutusecase logoutUseCase;

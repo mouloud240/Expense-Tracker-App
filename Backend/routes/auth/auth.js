@@ -176,7 +176,6 @@ AuthRouter.post('/SendEmail',async (req,res)=>{
 )
 AuthRouter.put('/forgotPassword',async (req,res)=>{
   const {newPassword,email}=req.body;
-  console.log(req.body);
   
   if (!newPassword){
     res.status(400).send('Provide a new password');
@@ -192,7 +191,6 @@ try{
   await userModel.findOneAndUpdate({Email:email},{Password:hashedPassword});
   }catch(err)
 {  
-     console.log(err)
     res.status(500).send('Error updating password');
  return 
   }

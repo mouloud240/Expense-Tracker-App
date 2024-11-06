@@ -25,8 +25,8 @@ class _PinsetterpageState extends State<Pinsetterpage> with SingleTickerProvider
 ];
   @override
     void initState() {
+    super.initState();
       
-      // TODO: implement initState
     controller=AnimationController(vsync: this,duration: Duration(milliseconds: 300));
     CurrentPin="";
     }
@@ -48,7 +48,7 @@ class _PinsetterpageState extends State<Pinsetterpage> with SingleTickerProvider
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
         }
         if (state is UserStateLoaded){
-          Navigator.pushNamed(context, "/home");
+          Navigator.pushNamed(context, "/setBudget");
         }
       } ,
         child: SizedBox.expand(
@@ -123,16 +123,13 @@ class _PinsetterpageState extends State<Pinsetterpage> with SingleTickerProvider
                         }
                       if (Buttons[index]=="->"){
                         if (CurrentPin.length!=4){
-                        //TODO replace with Stronger Vibrations 
                         HapticFeedback.vibrate();
                         controller.forward(from: 0.0); 
                         return ;
                         }
-                        print("Setting Pin");
                         BlocProvider.of<UserBloc>(context).add((ChangePinEvent(CurrentPin)));
                        //handle Logic Here
                       }
-            
                       },
                       child: Padding(
                         padding:EdgeInsets.all(36.sp),
