@@ -42,7 +42,8 @@ AuthRouter.post('/refresh',async (req,res)=>{
       return;
     }
     const accessToken=Jwt.sign({UserId:user.UserId},dotnev.parsed.ACCESS_SECRET,{expiresIn:"1h"}) 
-    res.json({accesToken:accessToken});
+    const refreshToken=Jwt.sign({UserID:user.UserID},dotnev.parsed.REFRESH_SECRET,{expiresIn:"7d"})
+    res.json({accesToken:accessToken,refreshToken:refreshToken});
   })
 }
 )

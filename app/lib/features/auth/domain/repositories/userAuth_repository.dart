@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:app/core/errors/failure.dart';
+import 'package:app/features/auth/domain/entities/subEntities/money.dart';
 import 'package:app/features/auth/domain/entities/user.dart';
 import 'package:dartz/dartz.dart';
 
@@ -13,4 +14,5 @@ abstract class UserauthRepository {
   Future <Either<Failure,void>>forgotPassword(String Email,String newPassword);
   Future <Either<Failure,void>>logout();
   Future <Either<Failure,String>>sendPassResetEmail(String email);
+  Future<Either<Failure,Money>>setBudget(Money money);
 }

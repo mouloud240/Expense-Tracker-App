@@ -5,6 +5,7 @@ import 'package:app/core/errors/failure.dart';
 import 'package:app/features/auth/data/models/userModel.dart';
 import 'package:app/features/auth/data/source/local/localDataSource.dart';
 import 'package:app/features/auth/data/source/remote/remoteDataSource.dart';
+import 'package:app/features/auth/domain/entities/subEntities/money.dart';
 import 'package:app/features/auth/domain/entities/user.dart';
 import 'package:app/features/auth/domain/repositories/userAuth_repository.dart';
 import 'package:dartz/dartz.dart';
@@ -89,6 +90,12 @@ class UserauthRepositoryImpl implements UserauthRepository{
   @override
   Future<Either<Failure, String>> sendPassResetEmail(String email)async {
     return await remotedatasource.sendResetEmail(email);
+  }
+
+  @override
+  Future<Either<Failure, Money>> setBudget(Money money) {
+    // TODO: implement setBudget
+    throw UnimplementedError();
   }
 }
   

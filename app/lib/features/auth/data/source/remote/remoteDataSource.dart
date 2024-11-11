@@ -2,6 +2,7 @@
 import 'package:app/core/Services/dio_service.dart';
 import 'package:app/core/errors/failure.dart';
 import 'package:app/features/auth/data/models/auth_model.dart';
+import 'package:app/features/auth/data/models/tokensModel.dart';
 import 'package:app/features/auth/data/models/userModel.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -106,11 +107,11 @@ Future<Either<Failure,void>>logout()async{
   }
   return left(Failure("Unkown Error"));
   }
-Future<Either<Failure,String>>refreshAccesToken(String refreshToken)async{
+Future<Either<Failure,TokensModel>>refreshAccesToken(String refreshToken)async{
     try {
      Response response=await dio.post("/refreshToken");
       if (response.statusCode==200){
-        return Right(response.data["accessToken"]);
+        return Right(TokensModel.fromJson(response.data));
       }
     }on DioException catch(e){
       if (e.response?.statusCode==403){

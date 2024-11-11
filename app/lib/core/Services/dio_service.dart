@@ -1,4 +1,6 @@
 import 'package:app/core/Services/sharedPrefsService.dart';
+import 'package:app/core/errors/failure.dart';
+import 'package:app/features/auth/data/models/tokensModel.dart';
 import 'package:app/features/auth/data/repository/userAuth_repository_impl.dart';
 import 'package:app/features/auth/data/source/local/localDataSource.dart';
 import 'package:app/features/auth/data/source/remote/remoteDataSource.dart';
@@ -8,6 +10,7 @@ import 'package:app/features/auth/domain/usecases/setPinUseCase.dart';
 import 'package:app/features/auth/domain/usecases/signInUseCase.dart';
 import 'package:app/features/auth/presentation/state/user_bloc.dart';
 import 'package:app/features/auth/presentation/state/user_events.dart';
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -65,8 +68,12 @@ static   final repo=UserauthRepositoryImpl(remotedatasource: Remotedatasource(),
       AuthBloc.add(logoutEvent());
         }
     }
+   
+    Future<Either<Failure,void>> _storeTokens(TokensModel model)async{
+    return await local.StoreTokens(model.accessToken,model.refreshToken);
+    }
     final accesToken=await remote.refreshAccesToken(refreshToken.getOrElse(() => ""));
-    accesToken.fold((fail)=>null, (token)=>local.StoreAccesToken(token));
+    accesToken.fold((fail)=>null, (model)async=>await _storeTokens(model));
     final accesToken2=await local.getAccessToken();
     if (accesToken2.isLeft()){
       AuthBloc.add(logoutEvent());

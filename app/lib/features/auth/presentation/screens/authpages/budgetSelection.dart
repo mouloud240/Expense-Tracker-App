@@ -2,7 +2,6 @@ import 'package:app/config/colors.dart';
 import 'package:app/core/currencies.dart';
 import 'package:app/features/auth/presentation/widgets/text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Budgetselection extends StatefulWidget {
@@ -20,8 +19,8 @@ class _BudgetselectionState extends State<Budgetselection> {
   @override
     void initState() {
       super.initState();
-      moneyController=TextEditingController(text: money.toString());
       money=0;
+      moneyController=TextEditingController(text: money.toString());
       _selectedCurrency="USD";
     }
   @override
@@ -55,7 +54,8 @@ class _BudgetselectionState extends State<Budgetselection> {
               ),
               Padding(
                 padding: EdgeInsets.only(left:16.w),
-                child: Text("Balance",style: TextStyle(color: Colors.grey,fontSize: 22.sp,fontWeight: FontWeight.w500),),
+                child: Text("Balance",style: TextStyle(color: Colors.grey,fontSize: 23.sp,fontWeight: FontWeight.w600),),
+              
               ),
               Padding(
                 padding: EdgeInsets.only(left: 10.w),
@@ -72,7 +72,7 @@ class _BudgetselectionState extends State<Budgetselection> {
                   child: Column(
                   mainAxisSize: MainAxisSize.min,
                 children: [
-                    //To style Later
+                  const Spacer(),
              Row(
                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
@@ -83,19 +83,40 @@ class _BudgetselectionState extends State<Budgetselection> {
                        
     GestureDetector(
                           onTap:(){
-                            print(int.parse(moneyController.text));
+                            setState(() {
+                              money=int.parse(moneyController.text);
+                            });
                           } ,
       child: Container(
-        color: Appcolors.green100,
-                            child: Text("Submit"),),
+                            padding: EdgeInsets.symmetric(horizontal: 20.w,vertical: 10.h),
+                  decoration: BoxDecoration(
+                                      color: Appcolors.green100,
+                     borderRadius: BorderRadius.circular(10.r)
+                            ),
+                            child: Text("Submit",style: TextStyle(
+                              color: Colors.white,fontWeight: FontWeight.w600,fontSize: 16.sp
+                            ),),),
     ),
-                        Container(
-color: Appcolors.red100
-                        ,child: Text("Reset"),)
+                        GestureDetector(
+                          onTap: (){
+                            setState(() {
+                              moneyController.text="0";
+                            });
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20.w,vertical: 10.h),
+                             decoration: BoxDecoration(
+                              color: Appcolors.red100,
+                              borderRadius: BorderRadius.circular(10.r)
+                            )
+                          ,child: Text("Reset",style: TextStyle(
+                              color: Colors.white,fontWeight: FontWeight.w600,fontSize: 16.sp
+                            ),),),
+                        )
                       ],
                       
              )  ,
-            
+     const Spacer(),       
                     DropdownMenu(
                       hintText: "Select Currency",
                        
@@ -104,15 +125,15 @@ color: Appcolors.red100
                           color: Appcolors.light40
                            
                   )),
-                        elevation: WidgetStatePropertyAll(0),
+                        elevation: const WidgetStatePropertyAll(0),
                         backgroundColor: WidgetStatePropertyAll(Appcolors.light40),
                                             ),
-                     inputDecorationTheme:  const InputDecorationTheme(
+                     inputDecorationTheme:  InputDecorationTheme(
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color:Colors.grey),
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          borderSide: BorderSide(color:Appcolors.light40,width: 2),
+                          borderRadius: const BorderRadius.all(Radius.circular(10)),
                         ),
-                        border: OutlineInputBorder(
+                        border: const OutlineInputBorder(
                           
                           borderSide: BorderSide(color:Colors.red),
                           
@@ -128,17 +149,25 @@ color: Appcolors.red100
                         _selectedCurrency=value??"USD";
                       })
                       },  
-              dropdownMenuEntries: [
+              dropdownMenuEntries: const [
 
-               const DropdownMenuEntry(value: "USD", label: "American Dollar",
+               DropdownMenuEntry(value: "USD", label: "American Dollar",
                         ),  
-const DropdownMenuEntry(value: "DZD", label: "Algerian Dinar",
+DropdownMenuEntry(value: "DZD", label: "Algerian Dinar",
                         ),
-const DropdownMenuEntry(value: "EUR", label: "Euro",
+DropdownMenuEntry(value: "EUR", label: "Euro",
                         ),
                       ],        
                     ),
-                    ElevatedButton(onPressed: (){}, child: Text("Continue"))
+                   const Spacer(flex: 2,), 
+                    ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all(Appcolors.violet100),
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r))),
+                        minimumSize: WidgetStateProperty.all(Size(343.w, 50.h)),
+                      ),
+                      onPressed: (){}, child: Text("Continue",style: TextStyle(color: Colors.white,fontWeight:FontWeight.w600,fontSize:18.sp ),)),
+                      const Spacer()
                     ], 
                   ),
                 ),
