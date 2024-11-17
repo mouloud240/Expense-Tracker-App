@@ -19,6 +19,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'features/auth/domain/usecases/setBudgetUseCase.dart';
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
   await Sharedprefsservice().init(); 
@@ -47,10 +49,14 @@ void main()async{
           Setpinusecase( UserauthRepositoryImpl(
             remotedatasource: Remotedatasource(),
             localedatasource: Localdatasource(sharedpref),
-            localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),
-          )),
-      
-        ),
+            localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),       ),
+            
+      ),
+      Setbudgetusecase( UserauthRepositoryImpl(
+            remotedatasource: Remotedatasource(),
+            localedatasource: Localdatasource(sharedpref),
+            localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),       ),
+        ),),
         child: const MyApp(),
       ),
       
@@ -96,11 +102,8 @@ class _MyAppState extends State<MyApp> {
            
           }
           if (state is UserStateLoaded){
-            return Scaffold(
-              body: Center(
-                child: Text(state.user.name),
-              ), 
-            );
+            return const Homepage();
+            
           }
          if (state is UserStateError){
             return Scaffold(

@@ -48,8 +48,6 @@ AuthRouter.post('/refresh',async (req,res)=>{
 }
 )
 AuthRouter.post('/register',async (req,res)=>{
-  const id=uuidv4();
-  console.log(req.body);
   const {Name,Email,Password,PayDay,totalBalance,monthlyIncome,pin}=req.body;
   if (!Name){
     res.status(422).send('Provide a name')
@@ -99,9 +97,10 @@ AuthRouter.post('/register',async (req,res)=>{
       PayDay: PayDay, // Set accordingly or initialize
       pin:pin,}) 
 const regUser=await user.save();
-  
+const accessToken=Jwt.sign({UserId:regUser._id},dotnev.parsed.ACCESS_SECRET,{expiresIn:"1h"}) 
+const refreshToken=Jwt.sign({UserId:regUser._id},dotnev.parsed.REFRESH_SECRET,{expiresIn:"7d"})
   if (regUser){
-     res.json(regUser);
+     res.json({"user":regUser,"accesToken":accessToken,"refreshToken":refreshToken});
 
   }else{
     res.statusCode(500).send('Error creating your account')
@@ -110,10 +109,12 @@ const regUser=await user.save();
 })
 AuthRouter.put('/pin',authMiddlware,async(req,res)=>{
   const user=req.user
+  console.log(user);
   if (!user){
     return res.status(405).send("Auth Error");
   }
   const pin=req.body.pin;
+  console.log(req.body)
   let updatedUser;
 if (!pin){
     return res.status(400).send("Provide a pin");
@@ -121,7 +122,7 @@ if (!pin){
   try{
 
   updatedUser= await userModel.findOneAndUpdate({_id:user.UserId},{pin:pin},{new:true});
-
+   console.log(updatedUser);
   }catch(e){
     console.log(e);
    return res.status(500).send("Error Updating Pin")
@@ -200,22 +201,8 @@ try{
   
 
 })
-AuthRouter.delete('/logout',async (req,res)=>{
-  const {email}=req.body;
-  if (!email){
-    res.status(400).send('Provide an email');
-    return;
-  }
-  try{
-    await userModel.findOneAndUpdate({Email:email},{Jwt:null});
 
-} catch(err){
-  res.status(500).send('Error logging out');
-  return;
-}
-res.send('Logged out');
-}
   
-)
+
 
 module.exports=AuthRouter;

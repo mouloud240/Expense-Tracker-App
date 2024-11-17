@@ -127,5 +127,29 @@ res.json({
     newBalace:user.totalBalance
   })
 })
+expsenseRouter.put('/budget',authMiddlware,async(req,res)=>{
+ const {Amount,Currency}=req.body;
+  const User=req.user;
+  if (!Amount){
+    res.send('Provide an Amount')
+    return;
+  }
+  if (!Currency){
+    res.send('Provide a Currency')
+    return;
+  }
+  let updatedUser=null
+  try{
+
+  updatedUser=await userModel.findOneAndUpdate({_id:User.UserId},{$set:{totalBalance:{Amount:Amount,Currency:Currency}}},{new:true})    
+  } catch(err){
+   res.send(err)
+   return;
+ }
+  if (!updatedUser){
+    res.status(200).send('Unknown Error!')
+  }
+ return res.send(updatedUser)
+})
 
 module.exports=expsenseRouter;

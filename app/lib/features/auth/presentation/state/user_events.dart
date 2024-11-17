@@ -1,6 +1,7 @@
+import 'package:app/features/auth/domain/entities/subEntities/money.dart';
 import 'package:app/features/auth/domain/entities/user.dart';
 
-class UserEvent {}
+sealed class UserEvent {}
 class UpdateUserEvent extends UserEvent {
   final User user;
   UpdateUserEvent(this.user);
@@ -24,5 +25,13 @@ class ChangePinEvent extends UserEvent {
   ChangePinEvent(this.pin);
 }
 class LoadingEvent extends UserEvent {
+}
 
+class SetBudgetEvent extends UserEvent{
+ final Money budget; 
+  SetBudgetEvent(this.budget);
+}
+class SetPlaceHolderEvent extends UserEvent{
+  final User user;
+  SetPlaceHolderEvent(this.user);
 }

@@ -27,7 +27,7 @@ class _PinsetterpageState extends State<Pinsetterpage> with SingleTickerProvider
     void initState() {
     super.initState();
       
-    controller=AnimationController(vsync: this,duration: Duration(milliseconds: 300));
+    controller=AnimationController(vsync: this,duration: const Duration(milliseconds: 300));
     CurrentPin="";
     }
    @override
@@ -42,16 +42,16 @@ class _PinsetterpageState extends State<Pinsetterpage> with SingleTickerProvider
       });
     return Scaffold(
       backgroundColor:Appcolors.violet100,
-      body:BlocListener<UserBloc,UserState>(
+      body:BlocConsumer<UserBloc,UserState>(
         listener:(context,state){
         if (state is UserStateError){
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
         }
         if (state is UserStateLoaded){
-          Navigator.pushNamed(context, "/setBudget");
+          Navigator.pushNamedAndRemoveUntil(context, "/setBudget", (route) => false);
         }
       } ,
-        child: SizedBox.expand(
+        builder:( context,state)=>SizedBox.expand(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
              mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -100,7 +100,7 @@ class _PinsetterpageState extends State<Pinsetterpage> with SingleTickerProvider
             SizedBox(
                 height: MediaQuery.of(context).size.height*0.7, 
                 width: MediaQuery.of(context).size.width,
-              child: GridView.builder(gridDelegate:SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3)
+              child: GridView.builder(gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3)
               , itemCount: Buttons.length
                 , itemBuilder:(context,index){
                     return GestureDetector(

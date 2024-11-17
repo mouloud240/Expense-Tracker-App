@@ -14,3 +14,7 @@ class UserStateError extends UserState {
 }
 class UserStateLoading extends UserState {
 }
+class UserPlaceholder extends UserState {
+ final User user;
+  UserPlaceholder(this.user);
+}

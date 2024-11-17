@@ -6,6 +6,7 @@ import 'package:app/features/auth/data/source/local/localDataSource.dart';
 import 'package:app/features/auth/data/source/remote/remoteDataSource.dart';
 import 'package:app/features/auth/domain/usecases/loginUseCase.dart';
 import 'package:app/features/auth/domain/usecases/logoutUseCase.dart';
+import 'package:app/features/auth/domain/usecases/setBudgetUseCase.dart';
 import 'package:app/features/auth/domain/usecases/setPinUseCase.dart';
 import 'package:app/features/auth/domain/usecases/signInUseCase.dart';
 import 'package:app/features/auth/presentation/state/user_bloc.dart';
@@ -18,7 +19,9 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 class DioService {
   static final local=Localdatasource(Sharedprefsservice().prefs);
 static   final repo=UserauthRepositoryImpl(remotedatasource: Remotedatasource(), localedatasourceSECURE:LocaledatasourceSECURE(FlutterSecureStorage()), localedatasource: local);
-  static final AuthBloc=UserBloc(local, Logoutusecase(repo), Loginusecase(repo), Signinusecase(repo), Setpinusecase(repo));
+  static final AuthBloc=UserBloc(local, Logoutusecase(repo), Loginusecase(repo), Signinusecase(repo), Setpinusecase(repo),
+ Setbudgetusecase(repo),
+  );
   static final decoder=JwtDecoder();
   static final Dio dio = Dio(
     BaseOptions(

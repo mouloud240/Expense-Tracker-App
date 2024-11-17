@@ -2,6 +2,7 @@
 
 import 'package:app/core/connection/networkInfoImpl.dart';
 import 'package:app/core/errors/failure.dart';
+import 'package:app/features/auth/data/models/subModels/moneyModel.dart';
 import 'package:app/features/auth/data/models/userModel.dart';
 import 'package:app/features/auth/data/source/local/localDataSource.dart';
 import 'package:app/features/auth/data/source/remote/remoteDataSource.dart';
@@ -40,7 +41,12 @@ class UserauthRepositoryImpl implements UserauthRepository{
       return left(Failure("No internet connection"));
     }
    await localedatasource.storeUser(Usermodel.fromEntity(user));
-   return await remotedatasource.signUp(Usermodel.fromEntity(user));
+  final response= await remotedatasource.signUp(Usermodel.fromEntity(user));
+  return response.fold((l) => left(l), (r) {
+      localedatasource.storeUser(r.user);
+      localedatasourceSECURE.StoreTokens(r.accesToken, r.refreshToken);
+      return right(r.user);
+    });
 }
 
   @override
@@ -50,7 +56,6 @@ class UserauthRepositoryImpl implements UserauthRepository{
     }
   return await remotedatasource.forgotPassword(Email, newPassword);
   }
-  @override
   Future<Either<Failure, String>> sendEmai(String email) async{
     if (await NetworkInfo.isConnected==false){
       return left(Failure("No internet connection"));
@@ -93,9 +98,12 @@ class UserauthRepositoryImpl implements UserauthRepository{
   }
 
   @override
-  Future<Either<Failure, Money>> setBudget(Money money) {
-    // TODO: implement setBudget
-    throw UnimplementedError();
+  Future<Either<Failure, User>> setBudget(Money money)async {
+  final response= await remotedatasource.setBudget(Moneymodel.fromMoney(money));
+  return response.fold((l) => left(l), (r) {
+      localedatasource.storeUser(r);
+      return right(r);
+    });
   }
 }
   
