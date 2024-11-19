@@ -9,16 +9,16 @@ expsenseRouter.post('/expense',authMiddlware ,async (req, res) => {
     res.status(420).send('user not found!');
     return;
   }
-  if (!req.body.Expense){
+  if (!req.body){
     res.status(420).send('provide a valid Expense')
     return;
   }
   try{
  const total=user.totalBalance;
-    const newTotal={Amount: total.Amount-req.body.Expense.Amount.Amount,Currency:total.Currency};
+    const newTotal={Amount: total.Amount-req.body.Amount.Amount,Currency:total.Currency};
     console.log(total)
  await userModel.updateOne({_id:User.UserId},{$set:{ totalBalance:newTotal }})
- await userModel.updateOne({_id:User.UserId},{$push:{Expenses:req.body.Expense}});
+ await userModel.updateOne({_id:User.UserId},{$push:{Expenses:req.body}});
   const newUser=await userModel.findById(User.UserId);
   res.json({
     status:"Added an expenses",

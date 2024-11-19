@@ -1,6 +1,7 @@
 // ignore_for_file: void_checks
 import 'package:app/core/Services/dio_service.dart';
 import 'package:app/core/errors/failure.dart';
+import 'package:app/features/auth/data/models/subModels/moneyModel.dart';
 import 'package:app/features/auth/domain/entities/subEntities/money.dart';
 import 'package:app/features/expenses/data/models/Expense-Model.dart';
 import 'package:dartz/dartz.dart';
@@ -10,9 +11,9 @@ class ExpenseRemoteDataSource {
   final dio=DioService.dio;
   Future<Either<Failure,Money>> addExpense(ExpenseModel expense)async{
     try { 
-    final response=await dio.post("/expense", data: {"Expense":expense.toJson()});
+    final response=await dio.post("/expense", data: expense.toJson());
       if (response.statusCode==200){
-       return right(response.data['newBalance']);
+       return right(Moneymodel.fromjson(response.data['newBalance']).toMoney());
       }
         } on DioException catch (e) {
       if (e.response?.statusCode==420){
@@ -24,6 +25,7 @@ return left(Failure("Internal Error"));  }
     try {
          final response=await dio.get("/expenses");
       if (response.statusCode==200){
+      print(response.data);
       return Right(response.data['expenses'].map<ExpenseModel>((e) => ExpenseModel.fromJson(e)).toList());
       }
         } on DioException catch(e) {

@@ -12,7 +12,7 @@ class Categorymodel with _$Categorymodel {
 
   factory Categorymodel.fromJson(Map<String, dynamic> json) {
     return Categorymodel(
-      id: json['Id'],
+      id: json['_id']??"",
       name: json['Name'],
       budget: Moneymodel.fromjson(json['Budget']),
     );

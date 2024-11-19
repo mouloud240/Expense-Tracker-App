@@ -155,6 +155,27 @@ class _$CategorymodelImpl implements _Categorymodel {
   @pragma('vm:prefer-inline')
   _$$CategorymodelImplCopyWith<_$CategorymodelImpl> get copyWith =>
       __$$CategorymodelImplCopyWithImpl<_$CategorymodelImpl>(this, _$identity);
+
+  @override
+
+  Category toEntity() {
+    return Category(
+      id: id,
+      name: name,
+      budget: budget.toMoney(),
+    );
+  }
+
+
+  @override
+  Map<String, dynamic> toJson() {
+   return {
+      "Id": id,
+      "Name": name,
+      "Budget": budget.toJson(),
+    }; 
+  }
+
 }
 
 abstract class _Categorymodel implements Categorymodel {

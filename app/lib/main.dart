@@ -17,7 +17,12 @@ import 'package:app/features/auth/presentation/state/user_state.dart';
 import 'package:app/features/expenses/data/repository/ExpensesRepoImpl.dart';
 import 'package:app/features/expenses/data/source/remote/expense_remote_data_source.dart';
 import 'package:app/features/expenses/domain/repositories/expenses_repository.dart';
+import 'package:app/features/expenses/domain/usecases/addExpenseUseCase.dart';
+import 'package:app/features/expenses/domain/usecases/deleteExpenseUseCase.dart';
+import 'package:app/features/expenses/domain/usecases/getExpensesUseCase.dart';
+import 'package:app/features/expenses/domain/usecases/updateExpenseUseCase.dart';
 import 'package:app/features/expenses/presentation/screens/homepage.dart';
+import 'package:app/features/expenses/presentation/state/expense_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,10 +41,8 @@ void main()async{
   setup();
   await Sharedprefsservice().init(); 
   final sharedpref=Sharedprefsservice().prefs;
-  runApp(MultiBlocProvider(
-    providers: [
-      BlocProvider(
-        create: (context)=>UserBloc(
+  final _expenseRepo= getit<ExpensesRepository>();
+  var _userBloc=UserBloc(
           Localdatasource(sharedpref),
          Logoutusecase( UserauthRepositoryImpl(
             remotedatasource: Remotedatasource(),
@@ -67,9 +70,14 @@ void main()async{
             remotedatasource: Remotedatasource(),
             localedatasource: Localdatasource(sharedpref),
             localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),       ),
-        ),),
-        child: const MyApp(),
+        ),);
+
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context)=>_userBloc,        child: const MyApp(),
       ),
+      BlocProvider(create: (context)=>expenseBloc(Updateexpenseusecase(_expenseRepo), DeleteExpenseusecase(_expenseRepo), Addexpenseusecase(_expenseRepo),Getexpensesusecase(_expenseRepo), _userBloc))
       
     ],
     child: const MyApp(),

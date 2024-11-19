@@ -21,8 +21,8 @@ class expenseBloc extends Bloc<expenseEvent, expenseState> {
   UserBloc userBloc;
   expenseBloc(this.updateexpenseusecase,this.deleteExpenseusecase,this.addexpenseusecase,this.getexpensesusecase,this.userBloc) : super(expenseInitial()) {
     on<ExpneseAdded>((event, emit) async {
-      if (state !is expensesLoaded){
-      emit(const expensesError("Expneses Not loaded", []));
+      if (!(state is expensesLoaded)){
+      emit(const expensesError("Expneses Not loade", []));
       return;
       }
         final res=await addexpenseusecase(event.expense);

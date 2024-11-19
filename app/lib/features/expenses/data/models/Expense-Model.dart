@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:app/features/auth/data/models/subModels/moneyModel.dart';
 import 'package:app/features/expenses/data/models/subModels/categoryModel.dart';
@@ -17,9 +16,9 @@ class ExpenseModel with _$ExpenseModel {
 
   factory ExpenseModel.fromJson(Map<String, dynamic> json) {
     return ExpenseModel(
-      id: json['Id'],
+      id: json['_id']??"",
       name: json['Name'],
-      category: json['Category'],
+      category: Categorymodel.fromJson(json['Category']),
       amount: Moneymodel.fromjson(json['Amount']),
       date: DateTime.parse(json['Date']),
     );
