@@ -17,4 +17,7 @@ class Moneymodel extends Money with EquatableMixin {
 
   @override
   List<Object?> get props => [amount,currency];
+
+ Money  toMoney()=>
+  Money(amount, currency);
 }

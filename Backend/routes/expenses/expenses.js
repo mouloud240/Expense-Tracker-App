@@ -1,16 +1,16 @@
 const userModel = require('../../Schemas/userShcema');
 const authMiddlware = require('../middlewares/authMiddlware');
 const expsenseRouter = require('express').Router();
-expsenseRouter.post('/addExpense',authMiddlware ,async (req, res) => {
+expsenseRouter.post('/expense',authMiddlware ,async (req, res) => {
    const User=req.user
   
   const user = await userModel.findById(User.UserId);
   if (!user){
-    res.send('user not found!');
+    res.status(420).send('user not found!');
     return;
   }
   if (!req.body.Expense){
-    res.send('provide a valid Expense')
+    res.status(420).send('provide a valid Expense')
     return;
   }
   try{
@@ -26,12 +26,11 @@ expsenseRouter.post('/addExpense',authMiddlware ,async (req, res) => {
   })
 
   }catch(err){
-    console.log(err)
-    res.send('Invalid Expense')
+    res.status(420).send('Invalid Expense')
     return;
   }
  })
-expsenseRouter.get('/Expenses',authMiddlware,async (req,res)=>{
+expsenseRouter.get('/expenses',authMiddlware,async (req,res)=>{
   const User=req.user
 
 const user = await userModel.findById(User.UserId)
@@ -41,8 +40,8 @@ const user = await userModel.findById(User.UserId)
   }  
   res.json({"expenses":user.Expenses});
 })
-expsenseRouter.get('/ExpensesByCat',authMiddlware,async (req,res)=>{
-  const category=req.query.category;
+expsenseRouter.get('/expensesByCat/:category',authMiddlware,async (req,res)=>{
+  const category=req.params.category;
  const User=req.user; 
   if (!category){
     res.send('No Category')
@@ -57,8 +56,8 @@ expsenseRouter.get('/ExpensesByCat',authMiddlware,async (req,res)=>{
   res.json({"expenses":expenses});
     
   })
-expsenseRouter.delete("/Expense",authMiddlware, async(req,res)=>{
-  const id=req.query.id;
+expsenseRouter.delete("/expense/:id",authMiddlware, async(req,res)=>{
+  const id=req.params.id;
   const User=req.user;
   if (!id){
     res.send('Provide an id')
@@ -80,7 +79,7 @@ expsenseRouter.delete("/Expense",authMiddlware, async(req,res)=>{
     await user.save()
     res.json({
       status:"Deleted expense",
-      newAmount:user.totalBalance
+      newBalace:user.totalBalance
     })
        
   } catch (error) {
@@ -90,8 +89,8 @@ expsenseRouter.delete("/Expense",authMiddlware, async(req,res)=>{
 
 
 })
-expsenseRouter.get('/Expense',authMiddlware,async(req,res)=>{
-  const id=req.query.id;
+expsenseRouter.get('/expense/:id',authMiddlware,async(req,res)=>{
+  const id=req.params.id;
   const User=req.user;
   if (!id){
     res.send('Provide an id')

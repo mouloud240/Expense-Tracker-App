@@ -7,6 +7,7 @@ part 'expense.freezed.dart';
 @freezed
 class Expense with _$Expense {
   const factory Expense({
+    required String id,
     required String name,
     required DateTime date,
     required Category category,

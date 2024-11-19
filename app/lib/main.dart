@@ -14,15 +14,26 @@ import 'package:app/features/auth/presentation/screens/authpages/signUp.dart';
 import 'package:app/features/auth/presentation/screens/welcomepages/welcome_screen.dart.dart';
 import 'package:app/features/auth/presentation/state/user_bloc.dart';
 import 'package:app/features/auth/presentation/state/user_state.dart';
+import 'package:app/features/expenses/data/repository/ExpensesRepoImpl.dart';
+import 'package:app/features/expenses/data/source/remote/expense_remote_data_source.dart';
+import 'package:app/features/expenses/domain/repositories/expenses_repository.dart';
 import 'package:app/features/expenses/presentation/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
+import 'package:get_it/get_it.dart';
 import 'features/auth/domain/usecases/setBudgetUseCase.dart';
-void main()async{
+final getit=GetIt.instance;
+void setup(){
   WidgetsFlutterBinding.ensureInitialized();
+  getit.registerSingleton<ExpensesRepository>(Expensesrepoimpl(
+   ExpenseRemoteDataSource()
+  ));
+}
+void main()async{
+
+  setup();
   await Sharedprefsservice().init(); 
   final sharedpref=Sharedprefsservice().prefs;
   runApp(MultiBlocProvider(

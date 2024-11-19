@@ -52,6 +52,6 @@ class UserBloc extends Bloc<UserEvent,UserState> {
     final response=await setBudgetUseCase(event.budget); 
     response.fold((l) =>emit(UserStateError(l.message)), (r) =>emit(UserStateLoaded(r)));
     });
+    
       }
-
 }
