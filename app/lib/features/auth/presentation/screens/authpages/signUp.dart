@@ -97,6 +97,7 @@ class _SignupState extends State<Signup> {
         );}
          if (state is UserStateLoaded){
         Navigator.of(context).pushNamed("/pinSet");
+        BlocProvider.of<UserBloc>(context).add(LoadingEvent());
         }
       },
         child: SingleChildScrollView(
@@ -105,7 +106,7 @@ class _SignupState extends State<Signup> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Spacer(),
+                const Spacer(),
                 Form(
                key:_formkey,
                   child: Column
@@ -171,7 +172,7 @@ class _SignupState extends State<Signup> {
 RegisterEvent(emailController.text, passwordController.text,nameController.text) 
  );} 
   else {
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text(  "Please accept the terms of service and privacy policy" )));
+  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text(  "Please accept the terms of service and privacy policy" )));
   }
  
  
@@ -194,12 +195,12 @@ RegisterEvent(emailController.text, passwordController.text,nameController.text)
                         
                         child: Text("Or with",style: TextStyle(color: Appcolors.light20,fontWeight: FontWeight.w600,fontSize: 16.sp),))
                     
-              ,Padding(padding: EdgeInsets.all(20),
+              ,Padding(padding: const EdgeInsets.all(20),
                child: ElevatedButton(
                           
             style: ButtonStyle(
                             padding:WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 10.h)) ,
-                backgroundColor: WidgetStatePropertyAll(Colors.white),
+                backgroundColor: const WidgetStatePropertyAll(Colors.white),
                             minimumSize: WidgetStatePropertyAll(Size(343.w, 64.h)),
               shape:WidgetStatePropertyAll(RoundedRectangleBorder(
              borderRadius: BorderRadius.circular(27.r),
@@ -212,7 +213,13 @@ RegisterEvent(emailController.text, passwordController.text,nameController.text)
                             ),),  
                           ),
                           onPressed: (){
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Feature Coming soon")));                }, child:Row(
+
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Feature Coming soon")));                
+                 
+  Navigator.of(context).pushNamed("/setBudget");
+                        
+                        }, child:Row(
+
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SvgPicture.asset("assets/icons/google.svg"),
@@ -237,7 +244,7 @@ RegisterEvent(emailController.text, passwordController.text,nameController.text)
                     ],
             
                   )),
-                Spacer(flex: 2,),
+                const Spacer(flex: 2,),
               
               ],
             ),

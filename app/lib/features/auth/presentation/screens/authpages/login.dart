@@ -42,9 +42,8 @@ class _LoginState extends State<Login> {
       body: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
           if (state is UserStateError) {
-          print("error ");
             ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text("Hehe")));
+                .showSnackBar(SnackBar(content: Text(state.message)));
           }
           if (state is UserStateLoaded) {
             Navigator.of(context).pushNamed("/home");
@@ -120,13 +119,18 @@ class _LoginState extends State<Login> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          "Forgot Password?",
-                          style: TextStyle(
-                              color: Appcolors.violet100,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600),
-                        )
+                      TextButton(
+                        onPressed: (){
+                          Navigator.of(context).pushNamed("/forgotPassword");
+                        },
+                        child: Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                                color: Appcolors.violet100,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600),
+                          ),
+                      )
                       ],
                     ),
                   )
@@ -148,7 +152,7 @@ class _LoginState extends State<Login> {
                 ),
                 TextButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamed("/pinSet");
+                      Navigator.of(context).pushNamed("/signup");
                     },
                     child: Text(
                       "Sign Up",

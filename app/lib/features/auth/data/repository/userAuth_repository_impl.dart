@@ -2,9 +2,11 @@
 
 import 'package:app/core/connection/networkInfoImpl.dart';
 import 'package:app/core/errors/failure.dart';
+import 'package:app/features/auth/data/models/subModels/moneyModel.dart';
 import 'package:app/features/auth/data/models/userModel.dart';
 import 'package:app/features/auth/data/source/local/localDataSource.dart';
 import 'package:app/features/auth/data/source/remote/remoteDataSource.dart';
+import 'package:app/features/auth/domain/entities/subEntities/money.dart';
 import 'package:app/features/auth/domain/entities/user.dart';
 import 'package:app/features/auth/domain/repositories/userAuth_repository.dart';
 import 'package:dartz/dartz.dart';
@@ -39,7 +41,12 @@ class UserauthRepositoryImpl implements UserauthRepository{
       return left(Failure("No internet connection"));
     }
    await localedatasource.storeUser(Usermodel.fromEntity(user));
-   return await remotedatasource.signUp(Usermodel.fromEntity(user));
+  final response= await remotedatasource.signUp(Usermodel.fromEntity(user));
+  return response.fold((l) => left(l), (r) {
+      localedatasource.storeUser(r.user);
+      localedatasourceSECURE.StoreTokens(r.accesToken, r.refreshToken);
+      return right(r.user);
+    });
 }
 
   @override
@@ -48,6 +55,12 @@ class UserauthRepositoryImpl implements UserauthRepository{
       return left(Failure("No internet connection"));
     }
   return await remotedatasource.forgotPassword(Email, newPassword);
+  }
+  Future<Either<Failure, String>> sendEmai(String email) async{
+    if (await NetworkInfo.isConnected==false){
+      return left(Failure("No internet connection"));
+    }
+    return await remotedatasource.sendResetEmail(email);
   }
   @override
   Future<Either<Failure, void>> logout() {
@@ -64,19 +77,33 @@ class UserauthRepositoryImpl implements UserauthRepository{
   }
 
   @override
-  Future<Either<Failure, void>> setPin(String pin)async {
+  Future<Either<Failure,Usermodel>> setPin(String pin)async {
    try {
 
      await localedatasourceSECURE.setPin(pin);
-    
+      return remotedatasource.setpin(pin);
+
     }catch (e) {
       return left(Failure("Error"));   
       }
-    return right(null);
   }
   @override 
   Future<bool>hasSeenWelcomePage()async{
   return  await localedatasource.hasSeenWelcomePage();
+  }
+
+  @override
+  Future<Either<Failure, String>> sendPassResetEmail(String email)async {
+    return await remotedatasource.sendResetEmail(email);
+  }
+
+  @override
+  Future<Either<Failure, User>> setBudget(Money money)async {
+  final response= await remotedatasource.setBudget(Moneymodel.fromMoney(money));
+  return response.fold((l) => left(l), (r) {
+      localedatasource.storeUser(r);
+      return right(r);
+    });
   }
 }
   

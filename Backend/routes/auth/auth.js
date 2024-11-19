@@ -8,7 +8,6 @@ const userModel = require('../../Schemas/userShcema');
 const dotnev=require('dotenv').config();
 const nodemailer = require('nodemailer')
 AuthRouter.post('/login',async (req,res)=>{
-  console.log(req.body);
   const {email,password}=req.body;
   const user = await userModel.findOne({Email:email});
   if (!email){
@@ -43,13 +42,12 @@ AuthRouter.post('/refresh',async (req,res)=>{
       return;
     }
     const accessToken=Jwt.sign({UserId:user.UserId},dotnev.parsed.ACCESS_SECRET,{expiresIn:"1h"}) 
-    res.json({accesToken:accessToken});
+    const refreshToken=Jwt.sign({UserID:user.UserID},dotnev.parsed.REFRESH_SECRET,{expiresIn:"7d"})
+    res.json({accesToken:accessToken,refreshToken:refreshToken});
   })
 }
 )
 AuthRouter.post('/register',async (req,res)=>{
-  const id=uuidv4();
-  console.log(req.body);
   const {Name,Email,Password,PayDay,totalBalance,monthlyIncome,pin}=req.body;
   if (!Name){
     res.status(422).send('Provide a name')
@@ -99,9 +97,10 @@ AuthRouter.post('/register',async (req,res)=>{
       PayDay: PayDay, // Set accordingly or initialize
       pin:pin,}) 
 const regUser=await user.save();
-  
+const accessToken=Jwt.sign({UserId:regUser._id},dotnev.parsed.ACCESS_SECRET,{expiresIn:"1h"}) 
+const refreshToken=Jwt.sign({UserId:regUser._id},dotnev.parsed.REFRESH_SECRET,{expiresIn:"7d"})
   if (regUser){
-     res.json(regUser);
+     res.json({"user":regUser,"accesToken":accessToken,"refreshToken":refreshToken});
 
   }else{
     res.statusCode(500).send('Error creating your account')
@@ -110,23 +109,31 @@ const regUser=await user.save();
 })
 AuthRouter.put('/pin',authMiddlware,async(req,res)=>{
   const user=req.user
+  console.log(user);
   if (!user){
     return res.status(405).send("Auth Error");
   }
   const pin=req.body.pin;
+  console.log(req.body)
+  let updatedUser;
 if (!pin){
     return res.status(400).send("Provide a pin");
   }
   try{
 
-await  userModel.findOneAndUpdate({id:user.UserId},{pin:pin})
+  updatedUser= await userModel.findOneAndUpdate({_id:user.UserId},{pin:pin},{new:true});
+   console.log(updatedUser);
   }catch(e){
+    console.log(e);
    return res.status(500).send("Error Updating Pin")
   }
-  return res.send("Updated User");
+  if (updatedUser){
+    return res.json(updatedUser);
+  }
+  return res.status(500).send("Error Updating Pin")
 })
-AuthRouter.post('/SendEmail/:email',async (req,res)=>{
-  const {email}=req.params;
+AuthRouter.post('/SendEmail',async (req,res)=>{
+  const {email}=req.body;
   const Otp=uuidv4().substring(0,6);
   let mailOptions = {
     from: 'trackiexpense@gmail.com',   // Sender address
@@ -171,6 +178,7 @@ AuthRouter.post('/SendEmail/:email',async (req,res)=>{
 )
 AuthRouter.put('/forgotPassword',async (req,res)=>{
   const {newPassword,email}=req.body;
+  
   if (!newPassword){
     res.status(400).send('Provide a new password');
     return;
@@ -184,31 +192,17 @@ try{
 
   await userModel.findOneAndUpdate({Email:email},{Password:hashedPassword});
   }catch(err)
-{
-     console.log(err)
+{  
     res.status(500).send('Error updating password');
  return 
   }
+
   res.send(hashedPassword);
   
 
 })
-AuthRouter.delete('/logout',async (req,res)=>{
-  const {email}=req.body;
-  if (!email){
-    res.status(400).send('Provide an email');
-    return;
-  }
-  try{
-    await userModel.findOneAndUpdate({Email:email},{Jwt:null});
 
-} catch(err){
-  res.status(500).send('Error logging out');
-  return;
-}
-res.send('Logged out');
-}
   
-)
+
 
 module.exports=AuthRouter;
