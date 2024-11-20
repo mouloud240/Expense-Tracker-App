@@ -21,15 +21,16 @@ class expenseBloc extends Bloc<expenseEvent, expenseState> {
   UserBloc userBloc;
   expenseBloc(this.updateexpenseusecase,this.deleteExpenseusecase,this.addexpenseusecase,this.getexpensesusecase,this.userBloc) : super(expenseInitial()) {
     on<ExpneseAdded>((event, emit) async {
-      if (!(state is expensesLoaded)){
-      emit(const expensesError("Expneses Not loade", []));
+      if (state is! expensesLoaded){
+      emit(const expensesError("Expneses Not loaded", []));
       return;
       }
         final res=await addexpenseusecase(event.expense);
         res.fold((l)=>emit(expensesError(l.message,(state as expensesLoaded).expenses)), (r){
           if (state is expensesLoaded){
            final currentExpenses=(state as expensesLoaded).expenses;
-           emit(expensesLoaded([...currentExpenses,event.expense]));
+           currentExpenses.add(event.expense);
+           emit(expensesLoaded(currentExpenses));
            userBloc.add(SetBudgetEvent(r));
           }
         });
@@ -40,7 +41,7 @@ class expenseBloc extends Bloc<expenseEvent, expenseState> {
       res.fold((l)=>emit(expensesError(l.message,const[])), (r)=>emit(expensesLoaded(r)));
     });
     on<ExpenseDeleted>((event, emit) async {
-      if (state !is expensesLoaded){
+      if (state is! expensesLoaded){
       emit(const expensesError("Expneses Not loaded", []));
       return;
       }

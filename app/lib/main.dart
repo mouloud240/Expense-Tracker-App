@@ -2,6 +2,7 @@ import 'package:app/core/Services/sharedPrefsService.dart';
 import 'package:app/features/auth/data/repository/userAuth_repository_impl.dart';
 import 'package:app/features/auth/data/source/local/localDataSource.dart';
 import 'package:app/features/auth/data/source/remote/remoteDataSource.dart';
+import 'package:app/features/auth/domain/usecases/getBudgetUseCase.dart';
 import 'package:app/features/auth/domain/usecases/loginUseCase.dart';
 import 'package:app/features/auth/domain/usecases/logoutUseCase.dart';
 import 'package:app/features/auth/domain/usecases/setPinUseCase.dart';
@@ -70,7 +71,13 @@ void main()async{
             remotedatasource: Remotedatasource(),
             localedatasource: Localdatasource(sharedpref),
             localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),       ),
-        ),);
+        ),
+     Getbudgetusecase( UserauthRepositoryImpl(
+            remotedatasource: Remotedatasource(),
+            localedatasource: Localdatasource(sharedpref),
+            localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),       ),
+)
+  );
 
   runApp(MultiBlocProvider(
     providers: [

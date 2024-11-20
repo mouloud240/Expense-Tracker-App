@@ -35,3 +35,5 @@ class SetPlaceHolderEvent extends UserEvent{
   final User user;
   SetPlaceHolderEvent(this.user);
 }
+class GetBudgetEvent extends UserEvent{
+}

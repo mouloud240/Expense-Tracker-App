@@ -4,6 +4,7 @@ const expsenseRouter = require('express').Router();
 expsenseRouter.post('/expense',authMiddlware ,async (req, res) => {
    const User=req.user
   
+  console.log(req.body)
   const user = await userModel.findById(User.UserId);
   if (!user){
     res.status(420).send('user not found!');
@@ -16,7 +17,6 @@ expsenseRouter.post('/expense',authMiddlware ,async (req, res) => {
   try{
  const total=user.totalBalance;
     const newTotal={Amount: total.Amount-req.body.Amount.Amount,Currency:total.Currency};
-    console.log(total)
  await userModel.updateOne({_id:User.UserId},{$set:{ totalBalance:newTotal }})
  await userModel.updateOne({_id:User.UserId},{$push:{Expenses:req.body}});
   const newUser=await userModel.findById(User.UserId);

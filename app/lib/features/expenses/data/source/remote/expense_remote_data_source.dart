@@ -25,7 +25,6 @@ return left(Failure("Internal Error"));  }
     try {
          final response=await dio.get("/expenses");
       if (response.statusCode==200){
-      print(response.data);
       return Right(response.data['expenses'].map<ExpenseModel>((e) => ExpenseModel.fromJson(e)).toList());
       }
         } on DioException catch(e) {

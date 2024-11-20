@@ -105,5 +105,12 @@ class UserauthRepositoryImpl implements UserauthRepository{
       return right(r);
     });
   }
+
+  @override
+  Future<Either<Failure, Money>> getBudget()async {
+   return  remotedatasource.getBudget().then((res){
+      return res.fold((l) => left(l), (r) => right(r.toMoney()));
+    });
+  }
 }
   

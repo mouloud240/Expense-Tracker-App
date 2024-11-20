@@ -17,17 +17,17 @@ class ExpenseModel with _$ExpenseModel {
   factory ExpenseModel.fromJson(Map<String, dynamic> json) {
     return ExpenseModel(
       id: json['_id']??"",
-      name: json['Name'],
-      category: Categorymodel.fromJson(json['Category']),
-      amount: Moneymodel.fromjson(json['Amount']),
-      date: DateTime.parse(json['Date']),
+      name: json['Name']??"dummy",
+      category:json['category']!=null? Categorymodel.fromJson(json['Category']):Categorymodel(id: "", name: "", budget: Moneymodel(0, "")),
+      amount: json['Amount']!=null?Moneymodel.fromjson(json['Amount']):Moneymodel(0, ""),
+      date:json['Date']!=null ?DateTime.parse(json['Date']):DateTime.now(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       "Id": id,
-      "name": name,
+      "Name": name,
       "category": category,
       "Amount": amount.toJson(),
       "Date": date.toIso8601String(),

@@ -25,7 +25,7 @@ class Usermodel extends User with EquatableMixin {
   factory Usermodel.fromJson(Map<String, dynamic> json) {
     return Usermodel(
       name: json['Name'],
-      hashedPassword: json['Password'],
+      hashedPassword: "",
       pin: json['pin'],
       email: json["Email"],
       uid: json['_id'],
@@ -47,27 +47,7 @@ class Usermodel extends User with EquatableMixin {
       MonthlyIncome:Moneymodel.fromMoney(user.MonthlyIncome) ,
     );
   }
-  Usermodel copyWith({
-    String? name,
-    String? hashedPassword,
-    String? pin,
-    String? email,
-    String? uid,
-    DateTime? payDay,
-    Moneymodel? totalBalance,
-    Moneymodel? MonthlyIncome,
-  }) {
-    return Usermodel(
-      name: name ?? this.name,
-      hashedPassword: hashedPassword ?? this.hashedPassword,
-      pin: pin ?? this.pin,
-      email: email ?? this.email,
-      uid: uid ?? this.uid,
-      payDay: payDay ?? this.payDay,
-      totalBalance: totalBalance ?? Moneymodel.fromMoney(this.totalBalance),
-      MonthlyIncome: MonthlyIncome ?? Moneymodel.fromMoney(this.MonthlyIncome),
-    );
-  }
+  
 
   Map<String, dynamic> toJson() {
     return {

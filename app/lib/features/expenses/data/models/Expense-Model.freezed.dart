@@ -230,8 +230,8 @@ class _$ExpenseModelImpl implements _ExpenseModel {
   Map<String, dynamic> toJson() {
    return {
        "Id": id,
-       "name": name,
-       "category": category,
+       "Name": name,
+       "Category": category,
        "Amount": amount.toJson(),
        "Date": date.toIso8601String(),
      };
