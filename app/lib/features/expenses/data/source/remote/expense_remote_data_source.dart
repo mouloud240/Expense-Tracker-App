@@ -34,6 +34,7 @@ return left(Failure("Internal Error"));  }
   }
   Future<Either<Failure,Money>> deleteExpense(String id)async{
     try {
+      print(id);
       final response=await dio.delete("/expense/$id");
       if (response.statusCode==200){
         return right(response.data['newBalance']);

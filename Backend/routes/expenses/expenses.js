@@ -4,7 +4,6 @@ const expsenseRouter = require('express').Router();
 expsenseRouter.post('/expense',authMiddlware ,async (req, res) => {
    const User=req.user
   
-  console.log(req.body)
   const user = await userModel.findById(User.UserId);
   if (!user){
     res.status(420).send('user not found!');
@@ -32,7 +31,6 @@ expsenseRouter.post('/expense',authMiddlware ,async (req, res) => {
  })
 expsenseRouter.get('/expenses',authMiddlware,async (req,res)=>{
   const User=req.user
-
 const user = await userModel.findById(User.UserId)
   if(!user){
     res.send('user not found!');
@@ -72,10 +70,11 @@ expsenseRouter.delete("/expense/:id",authMiddlware, async(req,res)=>{
     res.send('Expense not found')
     return;
   }
-  try {
-     
+  try { 
       user.Expenses = user.Expenses.filter(expense => expense._id.toString() !== id);
+
     user.totalBalance={Amount:user.totalBalance.Amount+expenseAmount,Currency:user.totalBalance.Currency}
+    console.log(user)
     await user.save()
     res.json({
       status:"Deleted expense",

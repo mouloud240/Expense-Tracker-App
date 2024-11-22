@@ -49,7 +49,8 @@ class expenseBloc extends Bloc<expenseEvent, expenseState> {
       res.fold((l)=>emit(expensesError(l.message,(state as expensesLoaded).expenses)), (r){
         if (state is expensesLoaded){
           final currentExpenses=(state as expensesLoaded).expenses;
-          emit(expensesLoaded(currentExpenses.where((element) => element.id!=event.expense.id).toList()));
+          currentExpenses.removeWhere((element) => element.id==event.expense.id);
+          emit(expensesLoaded(currentExpenses));
           userBloc.add(SetBudgetEvent(r));
         }
       });

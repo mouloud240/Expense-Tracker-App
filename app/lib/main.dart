@@ -42,8 +42,8 @@ void main()async{
   setup();
   await Sharedprefsservice().init(); 
   final sharedpref=Sharedprefsservice().prefs;
-  final _expenseRepo= getit<ExpensesRepository>();
-  var _userBloc=UserBloc(
+  final expenseRepo= getit<ExpensesRepository>();
+  var userBloc=UserBloc(
           Localdatasource(sharedpref),
          Logoutusecase( UserauthRepositoryImpl(
             remotedatasource: Remotedatasource(),
@@ -82,9 +82,9 @@ void main()async{
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(
-        create: (context)=>_userBloc,        child: const MyApp(),
+        create: (context)=>userBloc,child: const MyApp(),
       ),
-      BlocProvider(create: (context)=>expenseBloc(Updateexpenseusecase(_expenseRepo), DeleteExpenseusecase(_expenseRepo), Addexpenseusecase(_expenseRepo),Getexpensesusecase(_expenseRepo), _userBloc))
+      BlocProvider(create: (context)=>expenseBloc(Updateexpenseusecase(expenseRepo), DeleteExpenseusecase(expenseRepo), Addexpenseusecase(expenseRepo),Getexpensesusecase(expenseRepo), userBloc))
       
     ],
     child: const MyApp(),

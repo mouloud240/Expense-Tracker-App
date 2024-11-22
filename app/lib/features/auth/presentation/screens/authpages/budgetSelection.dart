@@ -1,5 +1,4 @@
 import 'package:app/config/colors.dart';
-import 'package:app/core/currencies.dart';
 import 'package:app/features/auth/domain/entities/subEntities/money.dart';
 import 'package:app/features/auth/presentation/state/user_bloc.dart';
 import 'package:app/features/auth/presentation/state/user_events.dart';
@@ -17,7 +16,6 @@ class Budgetselection extends StatefulWidget {
 }
 
 class _BudgetselectionState extends State<Budgetselection> {
-  final currencyList=Currencies.currenciesMap;
   late int money;
   late String _selectedCurrency;
   late TextEditingController moneyController;
