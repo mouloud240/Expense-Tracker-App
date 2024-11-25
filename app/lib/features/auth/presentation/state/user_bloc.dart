@@ -44,7 +44,7 @@ return UserStateInitial();}, (r) => UserStateLoaded(r)));
    on<logoutEvent>((event,emit)async{
       emit(UserStateLoading());
       final response=await logoutUseCase();
-      response.fold((l) =>emit(UserStateError(l.message)), (r) => emit(UserStateInitial()));
+      return response.fold((l) =>emit(UserStateError(l.message)), (r) => emit(UserStateInitial()));
     });
     on<UpdateUserEvent>((event,emit)
     {

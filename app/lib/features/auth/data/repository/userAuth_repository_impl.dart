@@ -63,9 +63,8 @@ class UserauthRepositoryImpl implements UserauthRepository{
     return await remotedatasource.sendResetEmail(email);
   }
   @override
-  Future<Either<Failure, void>> logout() {
-    localedatasourceSECURE.ClearTokens();
-   return remotedatasource.logout();
+  Future<Either<Failure, void>> logout() async{
+  return   await localedatasourceSECURE.ClearTokens();
   }
 
   @override

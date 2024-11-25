@@ -71,8 +71,7 @@ expsenseRouter.delete("/expense/:id",authMiddlware, async(req,res)=>{
     return;
   }
   try { 
-      user.Expenses = user.Expenses.filter(expense => expense._id.toString() !== id);
-
+    user.Expenses = user.Expenses.filter(expense => expense._id.toString() !== id);
     user.totalBalance={Amount:user.totalBalance.Amount+expenseAmount,Currency:user.totalBalance.Currency}
     console.log(user)
     await user.save()
