@@ -77,7 +77,7 @@ class Localdatasource {
   Future<Either<Failure,void>>storeUser(Usermodel user)async{
     
     try {
-      storage.setString("user", user.toJson().toString());
+      storage.setString("user", jsonEncode(user.toJson()));
         } catch (e) {
       return left(Failure("Error while storing User"));
         }
@@ -95,6 +95,7 @@ class Localdatasource {
       user=Usermodel.fromJson(jsonDecode(json!));
       }
     } catch (e) {
+      print("the error is $e");
       return left(Failure("Error while getting User"));
     }
      if (!found){

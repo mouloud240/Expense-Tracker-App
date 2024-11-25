@@ -214,6 +214,28 @@ class _$ExpenseModelImpl implements _ExpenseModel {
   @pragma('vm:prefer-inline')
   _$$ExpenseModelImplCopyWith<_$ExpenseModelImpl> get copyWith =>
       __$$ExpenseModelImplCopyWithImpl<_$ExpenseModelImpl>(this, _$identity);
+
+  @override
+  Expense toEntity() {
+   return Expense(
+       id: id,
+       name: name,
+       category: category.toEntity(),
+       amount: amount.toMoney(),
+       date: date,
+     );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+   return {
+       "Id": id,
+       "Name": name,
+       "Category": category,
+       "Amount": amount.toJson(),
+       "Date": date.toIso8601String(),
+     };
+  }
 }
 
 abstract class _ExpenseModel implements ExpenseModel {

@@ -12,6 +12,9 @@ Money totalBalance;
 Money MonthlyIncome;
  DateTime payDay;
  User({required this.MonthlyIncome,required this.totalBalance,required this.name,required this.hashedPassword,required this.pin,required this.email,required this.uid,required this.payDay});
- factory User.placeHolder()=>User(MonthlyIncome: Money(0, 'USD'),totalBalance: Money(0, 'USD'),name: 'Diddy',hashedPassword: '',pin: '',email: '',uid: '',payDay: DateTime.now());  
+ // ignore: non_constant_identifier_names
+ User copyWith({Money? MonthlyIncome,Money? totalBalance,String? name,String? hashedPassword,String? pin,String? email,String? uid,DateTime? payDay}){
+   return User(MonthlyIncome: MonthlyIncome??this.MonthlyIncome, totalBalance: totalBalance??this.totalBalance, name: name??this.name, hashedPassword: hashedPassword??this.hashedPassword, pin: pin??this.pin, email: email??this.email, uid: uid??this.uid, payDay: payDay??this.payDay);
+ }
 }
 

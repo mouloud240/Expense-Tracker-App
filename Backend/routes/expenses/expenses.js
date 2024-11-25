@@ -9,16 +9,15 @@ expsenseRouter.post('/expense',authMiddlware ,async (req, res) => {
     res.status(420).send('user not found!');
     return;
   }
-  if (!req.body.Expense){
+  if (!req.body){
     res.status(420).send('provide a valid Expense')
     return;
   }
   try{
  const total=user.totalBalance;
-    const newTotal={Amount: total.Amount-req.body.Expense.Amount.Amount,Currency:total.Currency};
-    console.log(total)
+    const newTotal={Amount: total.Amount-req.body.Amount.Amount,Currency:total.Currency};
  await userModel.updateOne({_id:User.UserId},{$set:{ totalBalance:newTotal }})
- await userModel.updateOne({_id:User.UserId},{$push:{Expenses:req.body.Expense}});
+ await userModel.updateOne({_id:User.UserId},{$push:{Expenses:req.body}});
   const newUser=await userModel.findById(User.UserId);
   res.json({
     status:"Added an expenses",
@@ -32,7 +31,6 @@ expsenseRouter.post('/expense',authMiddlware ,async (req, res) => {
  })
 expsenseRouter.get('/expenses',authMiddlware,async (req,res)=>{
   const User=req.user
-
 const user = await userModel.findById(User.UserId)
   if(!user){
     res.send('user not found!');
@@ -72,10 +70,10 @@ expsenseRouter.delete("/expense/:id",authMiddlware, async(req,res)=>{
     res.send('Expense not found')
     return;
   }
-  try {
-     
-      user.Expenses = user.Expenses.filter(expense => expense._id.toString() !== id);
+  try { 
+    user.Expenses = user.Expenses.filter(expense => expense._id.toString() !== id);
     user.totalBalance={Amount:user.totalBalance.Amount+expenseAmount,Currency:user.totalBalance.Currency}
+    console.log(user)
     await user.save()
     res.json({
       status:"Deleted expense",

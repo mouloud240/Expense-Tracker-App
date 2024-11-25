@@ -202,7 +202,22 @@ try{
 
 })
 
-  
+AuthRouter.get('/budget',authMiddlware,async(req,res)=>{ 
+ const User=req.user;
+  if (!User){
+
+    res.status(403).send('Unathorized');
+  return;
+}
+  const id=User.UserId;
+  const user=await userModel.findById(id);
+  if (!user){
+    res.status(404).send('User not found');
+    return;
+  }
+  res.json(user.totalBalance)
+})
+
 
 
 module.exports=AuthRouter;

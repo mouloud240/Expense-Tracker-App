@@ -4,6 +4,7 @@ import 'package:app/features/auth/data/models/tokensModel.dart';
 import 'package:app/features/auth/data/repository/userAuth_repository_impl.dart';
 import 'package:app/features/auth/data/source/local/localDataSource.dart';
 import 'package:app/features/auth/data/source/remote/remoteDataSource.dart';
+import 'package:app/features/auth/domain/usecases/getBudgetUseCase.dart';
 import 'package:app/features/auth/domain/usecases/loginUseCase.dart';
 import 'package:app/features/auth/domain/usecases/logoutUseCase.dart';
 import 'package:app/features/auth/domain/usecases/setBudgetUseCase.dart';
@@ -18,9 +19,11 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 class DioService {
   static final local=Localdatasource(Sharedprefsservice().prefs);
-static   final repo=UserauthRepositoryImpl(remotedatasource: Remotedatasource(), localedatasourceSECURE:LocaledatasourceSECURE(FlutterSecureStorage()), localedatasource: local);
+static   final repo=UserauthRepositoryImpl(remotedatasource: Remotedatasource(), localedatasourceSECURE:LocaledatasourceSECURE(const FlutterSecureStorage()), localedatasource: local);
+  // ignore: non_constant_identifier_names
   static final AuthBloc=UserBloc(local, Logoutusecase(repo), Loginusecase(repo), Signinusecase(repo), Setpinusecase(repo),
  Setbudgetusecase(repo),
+Getbudgetusecase(repo)
   );
   static final decoder=JwtDecoder();
   static final Dio dio = Dio(
@@ -60,6 +63,7 @@ static   final repo=UserauthRepositoryImpl(remotedatasource: Remotedatasource(),
       AuthBloc.add(logoutEvent());
         return handler.next(error);
       }
+      //TODO check lated Iat or Exp
         DateTime expiryDate = DateTime.fromMillisecondsSinceEpoch(decoded["Iat"] * 1000);
 
       bool refreshIsExpired=DateTime.now().isAfter(expiryDate);

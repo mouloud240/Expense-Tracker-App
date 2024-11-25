@@ -15,4 +15,5 @@ abstract class UserauthRepository {
   Future <Either<Failure,void>>logout();
   Future <Either<Failure,String>>sendPassResetEmail(String email);
   Future<Either<Failure,User>>setBudget(Money money);
+  Future<Either<Failure,Money>>getBudget();
 }

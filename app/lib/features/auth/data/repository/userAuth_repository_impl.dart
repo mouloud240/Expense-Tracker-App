@@ -63,9 +63,8 @@ class UserauthRepositoryImpl implements UserauthRepository{
     return await remotedatasource.sendResetEmail(email);
   }
   @override
-  Future<Either<Failure, void>> logout() {
-    localedatasourceSECURE.ClearTokens();
-   return remotedatasource.logout();
+  Future<Either<Failure, void>> logout() async{
+  return   await localedatasourceSECURE.ClearTokens();
   }
 
   @override
@@ -103,6 +102,13 @@ class UserauthRepositoryImpl implements UserauthRepository{
   return response.fold((l) => left(l), (r) {
       localedatasource.storeUser(r);
       return right(r);
+    });
+  }
+
+  @override
+  Future<Either<Failure, Money>> getBudget()async {
+   return  remotedatasource.getBudget().then((res){
+      return res.fold((l) => left(l), (r) => right(r.toMoney()));
     });
   }
 }

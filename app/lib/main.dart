@@ -2,6 +2,7 @@ import 'package:app/core/Services/sharedPrefsService.dart';
 import 'package:app/features/auth/data/repository/userAuth_repository_impl.dart';
 import 'package:app/features/auth/data/source/local/localDataSource.dart';
 import 'package:app/features/auth/data/source/remote/remoteDataSource.dart';
+import 'package:app/features/auth/domain/usecases/getBudgetUseCase.dart';
 import 'package:app/features/auth/domain/usecases/loginUseCase.dart';
 import 'package:app/features/auth/domain/usecases/logoutUseCase.dart';
 import 'package:app/features/auth/domain/usecases/setPinUseCase.dart';
@@ -17,7 +18,12 @@ import 'package:app/features/auth/presentation/state/user_state.dart';
 import 'package:app/features/expenses/data/repository/ExpensesRepoImpl.dart';
 import 'package:app/features/expenses/data/source/remote/expense_remote_data_source.dart';
 import 'package:app/features/expenses/domain/repositories/expenses_repository.dart';
+import 'package:app/features/expenses/domain/usecases/addExpenseUseCase.dart';
+import 'package:app/features/expenses/domain/usecases/deleteExpenseUseCase.dart';
+import 'package:app/features/expenses/domain/usecases/getExpensesUseCase.dart';
+import 'package:app/features/expenses/domain/usecases/updateExpenseUseCase.dart';
 import 'package:app/features/expenses/presentation/screens/homepage.dart';
+import 'package:app/features/expenses/presentation/state/expense_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,10 +42,8 @@ void main()async{
   setup();
   await Sharedprefsservice().init(); 
   final sharedpref=Sharedprefsservice().prefs;
-  runApp(MultiBlocProvider(
-    providers: [
-      BlocProvider(
-        create: (context)=>UserBloc(
+  final expenseRepo= getit<ExpensesRepository>();
+  var userBloc=UserBloc(
           Localdatasource(sharedpref),
          Logoutusecase( UserauthRepositoryImpl(
             remotedatasource: Remotedatasource(),
@@ -67,9 +71,20 @@ void main()async{
             remotedatasource: Remotedatasource(),
             localedatasource: Localdatasource(sharedpref),
             localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),       ),
-        ),),
-        child: const MyApp(),
+        ),
+     Getbudgetusecase( UserauthRepositoryImpl(
+            remotedatasource: Remotedatasource(),
+            localedatasource: Localdatasource(sharedpref),
+            localedatasourceSECURE: LocaledatasourceSECURE(const FlutterSecureStorage()),       ),
+)
+  );
+
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context)=>userBloc,child: const MyApp(),
       ),
+      BlocProvider(create: (context)=>expenseBloc(Updateexpenseusecase(expenseRepo), DeleteExpenseusecase(expenseRepo), Addexpenseusecase(expenseRepo),Getexpensesusecase(expenseRepo), userBloc))
       
     ],
     child: const MyApp(),

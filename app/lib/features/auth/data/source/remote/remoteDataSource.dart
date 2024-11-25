@@ -159,5 +159,20 @@ return left(Failure("Unkonw Error"));
     }
   return left(Failure("Unkonw Error"));
   }
+  Future<Either<Failure,Moneymodel>>getBudget()async{
+    try {
+     final resposnse =await dio.get("/budget");
+      if (resposnse.statusCode==200){
+        return Right(Moneymodel.fromjson(resposnse.data));
+      }
+    }on DioException catch(e){
+      if (e.response?.statusCode==500){
+        return left(Failure("Error Getting Budget"));
+        }
+      if (e.response?.statusCode==405){
+        return left(Failure("Unauthorized"));
+        } 
+    }
+    return left(Failure('Unkonw Error'));}
 }
 
