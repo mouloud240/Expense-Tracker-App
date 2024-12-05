@@ -204,6 +204,7 @@ try{
 
 AuthRouter.get('/budget',authMiddlware,async(req,res)=>{ 
  const User=req.user;
+  console.log(User);
   if (!User){
 
     res.status(403).send('Unathorized');

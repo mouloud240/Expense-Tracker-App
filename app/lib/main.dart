@@ -22,6 +22,7 @@ import 'package:app/features/expenses/domain/usecases/addExpenseUseCase.dart';
 import 'package:app/features/expenses/domain/usecases/deleteExpenseUseCase.dart';
 import 'package:app/features/expenses/domain/usecases/getExpensesUseCase.dart';
 import 'package:app/features/expenses/domain/usecases/updateExpenseUseCase.dart';
+import 'package:app/features/expenses/presentation/screens/addExpenseScreen.dart';
 import 'package:app/features/expenses/presentation/screens/homepage.dart';
 import 'package:app/features/expenses/presentation/state/expense_bloc.dart';
 import 'package:flutter/material.dart';
@@ -80,13 +81,16 @@ void main()async{
   );
 
   runApp(MultiBlocProvider(
+    
     providers: [
       BlocProvider(
         create: (context)=>userBloc,child: const MyApp(),
+        lazy: false,
       ),
-      BlocProvider(create: (context)=>expenseBloc(Updateexpenseusecase(expenseRepo), DeleteExpenseusecase(expenseRepo), Addexpenseusecase(expenseRepo),Getexpensesusecase(expenseRepo), userBloc))
+      BlocProvider(create: (context)=>expenseBloc(Updateexpenseusecase(expenseRepo), DeleteExpenseusecase(expenseRepo), Addexpenseusecase(expenseRepo),Getexpensesusecase(expenseRepo), userBloc),lazy: false,)
       
     ],
+    
     child: const MyApp(),
   ));
 }
@@ -116,6 +120,7 @@ class _MyAppState extends State<MyApp> {
           "/pinSet":(context)=>const Pinsetterpage(),
           "/forgotPassword":(context)=>const ForgotPassword(),
           "/setBudget":(context)=>const Budgetselection(),
+          "/addExpense":(context)=>const addExpenseScreen (),
         },
         debugShowCheckedModeBanner: false,
           theme: ThemeData(

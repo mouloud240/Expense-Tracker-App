@@ -28,6 +28,9 @@ db.connect(dbUri).then(()=>{
   console.log("server is running on port "+port);
 })
 })
-
+//Health Check
+app.get('/',(req,res)=>{
+  res.send("Server is running")
+})
 
 

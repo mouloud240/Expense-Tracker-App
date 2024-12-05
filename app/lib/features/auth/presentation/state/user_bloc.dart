@@ -73,5 +73,6 @@ return UserStateInitial();}, (r) => UserStateLoaded(r)));
       response.fold((l) =>emit(UserStateError(l.message)), (r) =>emit(UserStateLoaded((state as UserStateLoaded).user.copyWith(totalBalance: r))));
       }
     });
+
        }
 }

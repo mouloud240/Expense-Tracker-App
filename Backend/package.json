@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/mouloud240/Expense-Tracker-App#readme",
   "dependencies": {
+    "@prisma/client": "^6.0.1",
     "@types/mongoose": "^5.11.97",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
@@ -27,6 +28,7 @@
     "mongoose": "^8.7.0",
     "nodemailer": "^6.9.15",
     "nodemon": "^3.1.7",
+    "prisma": "^6.0.1",
     "uuid": "^10.0.0"
   }
 }

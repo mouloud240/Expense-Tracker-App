@@ -61,6 +61,18 @@ class Usermodel extends User with EquatableMixin {
       "monthlyIncome": Moneymodel.fromMoney(MonthlyIncome).toJson()
     };
   }
+  User toEntity() {
+    return User(
+      name: name,
+      hashedPassword: hashedPassword,
+      pin: pin,
+      email: email,
+      uid: uid,
+      payDay: payDay,
+      totalBalance: totalBalance,
+      MonthlyIncome: MonthlyIncome,
+    );
+  }
 
   @override
   List<Object?> get props => [name, email, totalBalance, payDay.toUtc(), MonthlyIncome];

@@ -18,7 +18,7 @@ class ExpenseModel with _$ExpenseModel {
     return ExpenseModel(
       id: json['_id']??"",
       name: json['Name']??"dummy",
-      category:json['category']!=null? Categorymodel.fromJson(json['Category']):Categorymodel(id: "", name: "", budget: Moneymodel(0, "")),
+      category:json['Category']!=null? Categorymodel.fromJson(json['Category']):Categorymodel(id: "", name: "", budget: Moneymodel(0, "")),
       amount: json['Amount']!=null?Moneymodel.fromjson(json['Amount']):Moneymodel(0, ""),
       date:json['Date']!=null ?DateTime.parse(json['Date']):DateTime.now(),
     );

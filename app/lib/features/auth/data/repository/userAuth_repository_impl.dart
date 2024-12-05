@@ -20,7 +20,7 @@ class UserauthRepositoryImpl implements UserauthRepository{
   @override
   Future<Either<Failure, User>> Login(String email, String password)async {
     if (await NetworkInfo.isConnected==false){
-      return left(Failure("No internet connection"));
+      return left(Failure("Make sure you're connected to the Internet"));
     } 
     final response=await  remotedatasource.login(email, password);
      Usermodel? user;
@@ -32,7 +32,7 @@ class UserauthRepositoryImpl implements UserauthRepository{
     if (user!=null){
       localedatasource.storeUser(user!);
     }
-    return right(user!); 
+    return right(user!.toEntity()); 
   }
 
   @override
@@ -64,6 +64,7 @@ class UserauthRepositoryImpl implements UserauthRepository{
   }
   @override
   Future<Either<Failure, void>> logout() async{
+   await  localedatasource.clearUser();
   return   await localedatasourceSECURE.ClearTokens();
   }
 

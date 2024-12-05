@@ -46,7 +46,7 @@ class _LoginState extends State<Login> {
                 .showSnackBar(SnackBar(content: Text(state.message)));
           }
           if (state is UserStateLoaded) {
-            Navigator.of(context).pushNamed("/home");
+            Navigator.of(context).pushNamedAndRemoveUntil("/home",(route)=>false);
           }
         },
         child: Column(

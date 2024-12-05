@@ -1,6 +1,4 @@
 import 'package:app/core/Services/sharedPrefsService.dart';
-import 'package:app/core/errors/failure.dart';
-import 'package:app/features/auth/data/models/tokensModel.dart';
 import 'package:app/features/auth/data/repository/userAuth_repository_impl.dart';
 import 'package:app/features/auth/data/source/local/localDataSource.dart';
 import 'package:app/features/auth/data/source/remote/remoteDataSource.dart';
@@ -12,7 +10,6 @@ import 'package:app/features/auth/domain/usecases/setPinUseCase.dart';
 import 'package:app/features/auth/domain/usecases/signInUseCase.dart';
 import 'package:app/features/auth/presentation/state/user_bloc.dart';
 import 'package:app/features/auth/presentation/state/user_events.dart';
-import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -31,66 +28,109 @@ Getbudgetusecase(repo)
       baseUrl: 'http://10.0.2.2:3001',
       )
   )..interceptors.add(InterceptorsWrapper(
-    onRequest: (options,handler)async{
-      const noAuthPaths=['/login','/register','/forgotPassword',"/refreshToken","/SendEmail","/resetPassword"];
-      if (noAuthPaths.contains(options.path)){
-        return handler.next(options);
-      }
-    final  dataSource=LocaledatasourceSECURE(const FlutterSecureStorage());
-
-      late String token;
-     final accesToken=await dataSource.getAccessToken();
-     token =accesToken.fold((fail){
-        return token;}, (token)=>token);
-      if (token==""){
-      return ;
-    }
-
-
-     options.headers['Authorization']=token;  
-     return handler.next(options); 
-    },
-  onError: (error,handler)async{
- final remote=Remotedatasource();
- final local=LocaledatasourceSECURE(const FlutterSecureStorage());
-  if (error.response?.statusCode==403){
-    final refreshToken=await local.getRefreshToken();
-    if (refreshToken.isRight()){
-    try {
-        
-      Map<String,dynamic> decoded=JwtDecoder.decode(refreshToken.getOrElse(()=>""));
-      if (decoded==""){
-      AuthBloc.add(logoutEvent());
-        return handler.next(error);
-      }
-      //TODO check lated Iat or Exp
-        DateTime expiryDate = DateTime.fromMillisecondsSinceEpoch(decoded["Iat"] * 1000);
-
-      bool refreshIsExpired=DateTime.now().isAfter(expiryDate);
-      if (refreshIsExpired){
-      AuthBloc.add(logoutEvent());
-        return handler.next(error);
-      }
-        } catch (e) {
-      AuthBloc.add(logoutEvent());
-        }
-    }
-   
-    Future<Either<Failure,void>> _storeTokens(TokensModel model)async{
-    return await local.StoreTokens(model.accessToken,model.refreshToken);
-    }
-    final accesToken=await remote.refreshAccesToken(refreshToken.getOrElse(() => ""));
-    accesToken.fold((fail)=>null, (model)async=>await _storeTokens(model));
-    final accesToken2=await local.getAccessToken();
-    if (accesToken2.isLeft()){
-      AuthBloc.add(logoutEvent());
-      return handler.next(error);
-    }
-    error.requestOptions.headers['Authorization']='Bearer ${accesToken2.getOrElse(() => "")}';
-    return handler.resolve(await dio.fetch(error.requestOptions) );
-}
-  return handler.next(error);
+   onRequest: (options, handler) async {
+  const noAuthPaths = [
+    '/login', '/register', '/forgotPassword', 
+    "/refreshToken", "/SendEmail", "/resetPassword"
+  ];
+  
+      print(options.path);
+  // If it's a no-auth path, immediately pass the request
+  if (noAuthPaths.contains(options.path)) {
+    return handler.next(options);
   }
+  
+  final dataSource = LocaledatasourceSECURE(const FlutterSecureStorage());
+  final accessTokenResult = await dataSource.getAccessToken();
+  
+  return accessTokenResult.fold(
+    (fail) {
+      // If token retrieval fails, trigger logout and reject the request
+      AuthBloc.add(logoutEvent());
+      return handler.reject(
+        DioException(
+          requestOptions: options, 
+          type: DioExceptionType.badCertificate, 
+          error: "Authentication Failed"
+        )
+      );
+    },
+    (token) {
+      // If token is empty, trigger logout and reject the request
+      if (token.isEmpty) {
+        AuthBloc.add(logoutEvent());
+        return handler.reject(
+          DioException(
+            requestOptions: options, 
+            type: DioExceptionType.badCertificate, 
+            error: "Empty Token"
+          )
+        );
+      }
+      
+      // Add the token to the request headers
+      options.headers['Authorization'] = '$token';
+      return handler.next(options);
+    }
+  );
+} ,
+  onError: (error, handler) async {
+  // Only attempt refresh for 401 (Unauthorized) or 403 (Forbidden) status codes
+  if (error.response?.statusCode == 401 || error.response?.statusCode == 403) {
+    final local = LocaledatasourceSECURE(const FlutterSecureStorage());
+    final remote = Remotedatasource();
+    
+    final refreshTokenResult = await local.getRefreshToken();
+    
+    if (refreshTokenResult.isRight()) {
+      final refreshToken = refreshTokenResult.getOrElse(() => "");
+      
+      try {
+        // Validate refresh token
+        final decoded = JwtDecoder.decode(refreshToken);
+        
+        if (decoded == null || decoded.isEmpty) {
+          AuthBloc.add(logoutEvent());
+          return handler.next(error);
+        }
+        
+        // Check token expiration
+        final expiryDate = DateTime.fromMillisecondsSinceEpoch(decoded["exp"] * 1000);
+        if (DateTime.now().isAfter(expiryDate)) {
+          AuthBloc.add(logoutEvent());
+          return handler.next(error);
+        }
+        
+        // Attempt to refresh access token
+        final newAccessTokenResult = await remote.refreshAccesToken(refreshToken);
+        
+        return await newAccessTokenResult.fold(
+          (failure) {
+            AuthBloc.add(logoutEvent());
+            return handler.next(error);
+          },
+          (tokenModel) async {
+            // Store new tokens
+            await local.StoreTokens(tokenModel.accessToken, tokenModel.refreshToken);
+            
+            // Create a new request with the updated token
+            final newRequest = error.requestOptions;
+            newRequest.headers['Authorization'] = tokenModel.accessToken;
+            
+            // Use RequestOptions directly to avoid potential infinite loops
+            final newResponse = await Dio().fetch(newRequest);
+            return handler.resolve(newResponse);
+          }
+        );
+      } catch (e) {
+        AuthBloc.add(logoutEvent());
+        return handler.next(error);
+      }
+    }
+  }
+  
+  return handler.next(error);
+}
   ));
 
   }

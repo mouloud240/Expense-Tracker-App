@@ -36,6 +36,7 @@ class expenseBloc extends Bloc<expenseEvent, expenseState> {
         });
     });
     on<ExpensesRequest>((event, emit) async {
+      print("REquestiong Expenses");
       emit(expensesLoading());
       final res=await getexpensesusecase();
       res.fold((l)=>emit(expensesError(l.message,const[])), (r)=>emit(expensesLoaded(r)));

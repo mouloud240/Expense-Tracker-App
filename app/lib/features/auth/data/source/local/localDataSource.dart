@@ -74,6 +74,7 @@ class Localdatasource {
  final SharedPreferences storage;
 
   Localdatasource(this.storage);
+  
   Future<Either<Failure,void>>storeUser(Usermodel user)async{
     
     try {
@@ -105,5 +106,13 @@ class Localdatasource {
   }
   Future<bool> hasSeenWelcomePage()async{
     return storage.getBool("seenWelcomePage")??false;
+  }
+  Future<Either<Failure,void>>clearUser()async{
+    try {
+      storage.remove("user");
+    } catch (e) {
+      return left(Failure("Error while clearing User"));
+    }
+    return right(null);
   }
  }
